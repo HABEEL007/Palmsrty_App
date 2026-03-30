@@ -14,7 +14,7 @@ import { validateEnv } from '@palmistry/config/env';
 // Validate Env at startup
 const env = validateEnv(process.env);
 const app: Express = express();
-const PORT: number = env.PORT || 3006;
+const PORT: number = env.REPORT_SERVICE_PORT || env.PORT || 3006;
 
 app.use(express.json());
 

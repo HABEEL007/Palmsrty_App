@@ -33,6 +33,10 @@ export const envSchema = z.object({
   GATEWAY_PORT: z.coerce.number().default(3001),
   AI_SERVICE_PORT: z.coerce.number().default(3002),
   IMAGE_SERVICE_PORT: z.coerce.number().default(3003),
+  USER_SERVICE_PORT: z.coerce.number().default(3004),
+  READING_SERVICE_PORT: z.coerce.number().default(3005),
+  REPORT_SERVICE_PORT: z.coerce.number().default(3006),
+  AD_SERVICE_PORT: z.coerce.number().default(3007),
   KEEP_ALIVE_PORT: z.coerce.number().default(3008),
 
   // Image Storage (Cloudinary)

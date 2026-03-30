@@ -28,7 +28,7 @@ jobs:
         run: pnpm install
       
       - name: Build web app
-        run: pnpm --filter @palmistry/web build
+        run: pnpm turbo run build --filter=@palmistry/web
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
