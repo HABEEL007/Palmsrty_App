@@ -2,20 +2,23 @@
  * @file PalmImageUploader.tsx
  */
 
-import React, { useState } from 'react';
-import { Camera, Upload, CheckCircle, Smartphone } from 'lucide-react';
-import { Button } from '../primitives/Button';
-import './PalmImageUploader.css';
+import React, { useState } from "react";
+import { Camera, Upload, CheckCircle, Smartphone } from "lucide-react";
+import { Button } from "../primitives/Button";
+import "./PalmImageUploader.css";
 
 export interface PalmImageUploaderProps {
-  side: 'left' | 'right';
+  side: "left" | "right";
   onImageCaptured: (file: File) => void;
 }
 
 /**
  * Advanced palm image uploader with drag & drop and camera simulation.
  */
-export const PalmImageUploader: React.FC<PalmImageUploaderProps> = ({ side, onImageCaptured }) => {
+export const PalmImageUploader: React.FC<PalmImageUploaderProps> = ({
+  side,
+  onImageCaptured,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -28,8 +31,8 @@ export const PalmImageUploader: React.FC<PalmImageUploaderProps> = ({ side, onIm
   };
 
   return (
-    <div 
-      className={`palm-uploader glass ${isHovered ? 'palm-uploader--hover' : ''}`}
+    <div
+      className={`palm-uploader glass ${isHovered ? "palm-uploader--hover" : ""}`}
       onDragOver={() => setIsHovered(true)}
       onDragLeave={() => setIsHovered(false)}
     >
@@ -39,35 +42,46 @@ export const PalmImageUploader: React.FC<PalmImageUploaderProps> = ({ side, onIm
           <div className="palm-uploader__overlay">
             <CheckCircle className="palm-uploader__check" />
             <span>Image Captured</span>
-            <Button variant="ghost" size="sm" onClick={() => setPreview(null)}>Retake</Button>
+            <Button variant="ghost" size="sm" onClick={() => setPreview(null)}>
+              Retake
+            </Button>
           </div>
         </div>
       ) : (
         <div className="palm-uploader__content">
           <div className="palm-uploader__icons">
             <div className="palm-uploader__icon-bg">
-              {side === 'left' ? <Smartphone className="palm-icon" /> : <Camera className="palm-icon" />}
+              {side === "left" ? (
+                <Smartphone className="palm-icon" />
+              ) : (
+                <Camera className="palm-icon" />
+              )}
             </div>
             <Upload className="palm-uploader__upload-icon" />
           </div>
           <h3>Scan Your {side.charAt(0).toUpperCase() + side.slice(1)} Hand</h3>
           <p>Place your hand flat in good lighting for clear results.</p>
-          
+
           <div className="palm-uploader__actions">
-            <Button variant="primary" onClick={() => document.getElementById(`palm-input-${side}`)?.click()}>
+            <Button
+              variant="primary"
+              onClick={() =>
+                document.getElementById(`palm-input-${side}`)?.click()
+              }
+            >
               Upload Photo
             </Button>
-            <input 
+            <input
               id={`palm-input-${side}`}
-              type="file" 
-              accept="image/*" 
-              style={{ display: 'none' }} 
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
               onChange={handleFileChange}
             />
           </div>
         </div>
       )}
-      
+
       {/* Visual Guide Overlay (Simplified) */}
       {!preview && (
         <div className="palm-uploader__guide">

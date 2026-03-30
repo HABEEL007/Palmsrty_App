@@ -6,11 +6,11 @@
  */
 
 export enum ErrorCode {
-  UNAUTHORIZED = 'UNAUTHORIZED',
-  BAD_REQUEST = 'BAD_REQUEST',
-  NOT_FOUND = 'NOT_FOUND',
-  INTERNAL_ERROR = 'INTERNAL_ERROR',
-  VALIDATION_FAILED = 'VALIDATION_FAILED',
+  UNAUTHORIZED = "UNAUTHORIZED",
+  BAD_REQUEST = "BAD_REQUEST",
+  NOT_FOUND = "NOT_FOUND",
+  INTERNAL_ERROR = "INTERNAL_ERROR",
+  VALIDATION_FAILED = "VALIDATION_FAILED",
 }
 
 /**
@@ -23,7 +23,7 @@ export class AppError extends Error {
     public readonly details: unknown = null,
   ) {
     super(message);
-    this.name = 'AppError';
+    this.name = "AppError";
     Object.setPrototypeOf(this, AppError.prototype);
   }
 }
@@ -31,14 +31,20 @@ export class AppError extends Error {
 /**
  * Factory to create standardized error responses.
  */
-export const createErrorResponse = (code: ErrorCode, message: string, details: unknown = null) => {
-  return {
-    success: false,
-    error: {
-      code,
-      message,
-      details,
-    },
-    timestamp: new Date().toISOString(),
-  };
-};
+export const createErrorResponse = (
+  code: ErrorCode,
+  message: string,
+  details: unknown = null,
+): {
+  success: boolean;
+  error: { code: ErrorCode; message: string; details: unknown };
+  timestamp: string;
+} => ({
+  success: false,
+  error: {
+    code,
+    message,
+    details,
+  },
+  timestamp: new Date().toISOString(),
+});

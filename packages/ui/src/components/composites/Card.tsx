@@ -2,11 +2,11 @@
  * @file Card.tsx
  */
 
-import React from 'react';
-import './Card.css';
+import React from "react";
+import "./Card.css";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'glass';
+  variant?: "default" | "glass";
   isGlow?: boolean;
 }
 
@@ -15,17 +15,19 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const Card: React.FC<CardProps> = ({
   children,
-  variant = 'default',
+  variant = "default",
   isGlow = false,
-  className = '',
+  className = "",
   ...props
 }) => {
   const classes = [
-    'palm-card',
-    variant === 'glass' ? 'glass' : '',
-    isGlow ? 'palm-card--glow' : '',
+    "palm-card",
+    variant === "glass" ? "glass" : "",
+    isGlow ? "palm-card--glow" : "",
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className={classes} {...props}>

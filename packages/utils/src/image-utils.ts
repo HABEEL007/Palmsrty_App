@@ -12,7 +12,7 @@
  * @example isValidImageType('image/jpeg') // returns true
  */
 export const isValidImageType = (mimeType: string): boolean => {
-  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  const supportedTypes = ["image/jpeg", "image/png", "image/webp"];
   return supportedTypes.includes(mimeType);
 };
 
@@ -21,6 +21,5 @@ export const isValidImageType = (mimeType: string): boolean => {
  * @param filename - Original filename.
  * @returns Normalized filename.
  */
-export const normalizeFilename = (filename: string): string => {
-  return filename.toLowerCase().trim().replace(/\s+/g, '_');
-};
+export const normalizeFilename = (filename: string): string =>
+  filename.toLowerCase().trim().replace(/\s+/g, "_");
