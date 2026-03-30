@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,7 +22,7 @@ jobs:
           node-version: '24' 
       
       - name: Install pnpm
-        uses: pnpm/action-setup@v3 # Reverted to v3 as the user's log shows v3 in previous runs
+        uses: pnpm/action-setup@v4
       
       - name: Install dependencies
         run: pnpm install
