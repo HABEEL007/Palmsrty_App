@@ -5,19 +5,10 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { env } from '@palmistry/config/env';
 
-// Environment-agnostic variable retrieval
-const getEnv = (key: string): string | undefined => {
-  // @ts-ignore - Handle Vite
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    return import.meta.env[`VITE_${key}`];
-  }
-  // Handle Node.js
-  return process.env[key];
-};
-
-const supabaseUrl = getEnv('SUPABASE_URL');
-const supabaseKey = getEnv('SUPABASE_ANON_KEY');
+const supabaseUrl = env.SUPABASE_URL;
+const supabaseKey = env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.warn('⚠️ Supabase credentials missing. Client initialization will fail.');

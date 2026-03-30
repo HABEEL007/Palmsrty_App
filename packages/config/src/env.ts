@@ -35,11 +35,13 @@ export const envSchema = z.object({
   CLOUDINARY_URL: z.string().url().optional(),
 });
 
+export type Env = z.infer<typeof envSchema>;
+
 /**
  * Validated Environment Variables
  */
-export const validateEnv = (processEnv: NodeJS.ProcessEnv = process.env) => {
-  const parsed = envSchema.safeParse(processEnv);
+export const validateEnv = (config: Record<string, unknown> = process.env): Env => {
+  const parsed = envSchema.safeParse(config);
 
   if (!parsed.success) {
     console.error('❌ Invalid environment variables:');
@@ -49,3 +51,6 @@ export const validateEnv = (processEnv: NodeJS.ProcessEnv = process.env) => {
 
   return parsed.data;
 };
+
+// Export singleton to avoid repetitive validation
+export const env = validateEnv();

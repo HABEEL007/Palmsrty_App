@@ -5,16 +5,18 @@
 
 import pino from 'pino';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env['NODE_ENV'] === 'production';
+const serviceName = process.env['SERVICE_NAME'] || 'api-gateway';
+const logLevel = process.env['LOG_LEVEL'] || 'info';
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
+  level: logLevel,
   formatters: {
     level: (label) => ({ level: label.toUpperCase() }),
   },
   timestamp: pino.stdTimeFunctions.isoTime,
   base: {
-    service: process.env.SERVICE_NAME || 'unknown',
+    service: serviceName,
   },
   // Use pino-pretty for development
   transport: !isProduction 
