@@ -6,7 +6,6 @@
  */
 
 import express, { Express, Request, Response, NextFunction } from 'express';
-import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';

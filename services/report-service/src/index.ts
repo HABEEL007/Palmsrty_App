@@ -8,7 +8,7 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { jsPDF } from 'jspdf';
 import { PalmReading } from '@palmistry/types';
-import { ErrorCode, createErrorResponse, logger, logError } from '@palmistry/utils';
+import { ErrorCode, createErrorResponse, logger } from '@palmistry/utils';
 import { validateEnv } from '@palmistry/config/env';
 
 // Validate Env at startup
@@ -42,7 +42,7 @@ app.post('/generate-pdf', async (req: Request, res: Response, next: NextFunction
 });
 
 // Generic Error Handler
-app.use((err: unknown, req: Request, res: Response): void => {
+app.use((err: unknown, _req: Request, res: Response): void => {
   console.error('[REPORT-SERVICE ERROR]', err);
   res.status(500).json(createErrorResponse(ErrorCode.INTERNAL_ERROR, 'Internal report-service error.'));
 });

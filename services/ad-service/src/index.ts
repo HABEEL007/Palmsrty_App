@@ -5,7 +5,7 @@
  * @description Ad Service - manages ad display logic and tracking.
  */
 
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response } from 'express';
 import { logger } from '@palmistry/utils';
 import { validateEnv } from '@palmistry/config/env';
 
@@ -19,7 +19,7 @@ app.use(express.json());
 /**
  * Get relevant ad based on user context.
  */
-app.get('/ads', (req: Request, res: Response): void => {
+app.get('/ads', (_req: Request, res: Response): void => {
   const ads = [
     { id: '1', title: 'Premium Palmistry PDF', link: '/premium' },
     { id: '2', title: 'Unlock Ancestors Reading', link: '/ancestors' },
@@ -30,7 +30,7 @@ app.get('/ads', (req: Request, res: Response): void => {
 /**
  * Health Check.
  */
-app.get('/health', (req: Request, res: Response): void => {
+app.get('/health', (_req: Request, res: Response): void => {
   res.json({ status: 'OK', service: 'ad-service' });
 });
 

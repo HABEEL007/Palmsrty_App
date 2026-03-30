@@ -57,12 +57,12 @@ app.post('/upload', async (req: Request, res: Response, next: NextFunction): Pro
   }
 });
 
-app.get('/health', (req: Request, res: Response): void => {
+app.get('/health', (_req: Request, res: Response): void => {
   res.json({ status: 'OK', service: 'image-service' });
 });
 
 // Error Handler
-app.use((err: unknown, req: Request, res: Response, next: NextFunction): void => {
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction): void => {
   if (err instanceof AppError) {
     res.status(400).json(createErrorResponse(err.code, err.message));
     return;
