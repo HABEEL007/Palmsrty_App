@@ -18,10 +18,8 @@ jobs:
         with:
           node-version: '22' # Upgraded to fix deprecation
       
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3 # Use v3 for better Node 22 support
-        with:
-          version: 9
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3 # Reverted to v3 as the user's log shows v3 in previous runs
       
       - name: Install dependencies
         run: pnpm install
