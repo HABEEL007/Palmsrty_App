@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # Upgraded to fix deprecation
+          node-version: '24' 
       
       - name: Install pnpm
         uses: pnpm/action-setup@v3 # Reverted to v3 as the user's log shows v3 in previous runs

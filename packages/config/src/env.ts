@@ -1,9 +1,10 @@
-/**
- * @file env.ts
- * @description Zod-based environment variable validation for all PALMSTRY services.
- */
-
 import { z } from 'zod';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Force load .env from the project root
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '../../.env') }); // Fallback for package dirs
 
 /**
  * Common Environment Schema
