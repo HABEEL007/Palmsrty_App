@@ -28,7 +28,7 @@ jobs:
         run: pnpm install
       
       - name: Build production app
-        run: pnpm build
+        run: pnpm turbo run build --filter=@palmistry/web
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -45,6 +45,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       
+      - name: Make gradlew executable
+        run: chmod +x apps/mobile/android/gradlew
+
       - name: Build Debug APK
         run: |
           cd apps/mobile/android
