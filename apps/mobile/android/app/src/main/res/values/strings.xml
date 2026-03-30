@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">palmistry</string>
+    <string name="title_activity_main">palmistry</string>
+    <string name="package_name">com.palmistry.app</string>
+    <string name="custom_url_scheme">com.palmistry.app</string>
+</resources>

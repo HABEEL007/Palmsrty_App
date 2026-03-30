@@ -37,9 +37,11 @@ desktop.ini
 *.swp
 *.swo
 
-# Mobile / Capacitor
-apps/mobile/android/
-apps/mobile/ios/
+# Mobile / Capacitor (Ignore only build outputs, keep project files)
+apps/mobile/android/build/
+apps/mobile/android/app/build/
+apps/mobile/android/.gradle/
+apps/mobile/ios/App/App.xcarchive/
 capacitor.config.ts.bak
 
 # Turborepo
