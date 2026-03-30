@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  
+  body {
+    @apply bg-background text-text selection:bg-primary/30 selection:text-white animate-bg-shift;
+    margin: 0;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-surface/70 backdrop-blur-[20px] border border-primary/20 rounded-2xl;
+  }
+  
+  .neon-glow {
+    @apply shadow-neon-primary;
+  }
+}
+
+/* Floating particles background */
+.particles-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 20s infinite linear;
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh) translateX(0); }
+  100% { transform: translateY(-100px) translateX(100px); }
+}

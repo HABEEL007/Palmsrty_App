@@ -1,0 +1,19 @@
+{
+  "name": "@palmistry/config",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./env": "./src/env.ts",
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2",
+    "eslint": "^9.0.0"
+  }
+}

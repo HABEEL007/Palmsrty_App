@@ -1,0 +1,128 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-palmistry_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-palmistry_pass}
+      POSTGRES_DB: ${DB_NAME:-palmistry_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - palmistry-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U palmistry_user -d palmistry_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - palmistry-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - palmistry-network
+
+  user-service:
+    build:
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=postgresql://palmistry_user:palmistry_pass@postgres:5432/palmistry_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - palmistry-network
+
+  image-service:
+    build:
+      context: .
+      dockerfile: services/image-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+    networks:
+      - palmistry-network
+
+  ai-service:
+    build:
+      context: .
+      dockerfile: services/ai-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - palmistry-network
+
+  reading-service:
+    build:
+      context: .
+      dockerfile: services/reading-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3004
+      - DATABASE_URL=postgresql://palmistry_user:palmistry_pass@postgres:5432/palmistry_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - palmistry-network
+
+  ad-service:
+    build:
+      context: .
+      dockerfile: services/ad-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3005
+    networks:
+      - palmistry-network
+
+  report-service:
+    build:
+      context: .
+      dockerfile: services/report-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3006
+    networks:
+      - palmistry-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  palmistry-network:
+    driver: bridge

@@ -1,0 +1,59 @@
+services:
+  # 1. API Gateway (Node.js)
+  - type: web
+    name: palmistry-api-gateway
+    runtime: node
+    plan: free
+    rootDir: services/api-gateway
+    buildCommand: pnpm install && pnpm build
+    startCommand: node dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    healthCheckPath: /health
+
+  # 2. AI Service (Python)
+  - type: web
+    name: palmistry-ai-service
+    runtime: python
+    plan: free
+    rootDir: services/ai-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: UPSTASH_REDIS_URL
+        sync: false
+      - key: UPSTASH_REDIS_TOKEN
+        sync: false
+    healthCheckPath: /health
+
+  # 3. Image Service (Python)
+  - type: web
+    name: palmistry-image-service
+    runtime: python
+    plan: free
+    rootDir: services/image-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+    healthCheckPath: /health
+
+  # 4. Keep-Alive Service (Node.js)
+  - type: web
+    name: palmistry-keep-alive
+    runtime: node
+    plan: free
+    rootDir: services/keep-alive
+    buildCommand: pnpm install && pnpm build
+    startCommand: node dist/index.js
+    healthCheckPath: /health

@@ -1,0 +1,15 @@
+{
+  "name": "@palmistry/keep-alive",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "build": "tsup src/index.ts --format cjs,esm"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.1",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2"
+  }
+}

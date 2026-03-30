@@ -1,0 +1,16 @@
+.palm-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: #151518;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.palm-card--glow {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+.palm-card--glow:hover {
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+}

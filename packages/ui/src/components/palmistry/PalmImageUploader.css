@@ -1,0 +1,95 @@
+.palm-uploader {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  padding: 2rem;
+  transition: all 300ms ease;
+  border: 1px dashed var(--color-glass-border);
+}
+
+.palm-uploader--hover {
+  border-color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.palm-uploader__content h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.palm-uploader__content p {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  max-width: 250px;
+}
+
+.palm-uploader__icons {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.palm-uploader__icon-bg {
+  width: 80px;
+  height: 80px;
+  background: var(--color-glass);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.palm-uploader__upload-icon {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background: var(--color-primary);
+  color: white;
+  padding: 4px;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+}
+
+.palm-uploader__preview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.palm-uploader__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.palm-uploader__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 12, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.palm-uploader__check {
+  width: 48px;
+  height: 48px;
+  color: var(--color-success);
+}
+
+.palm-uploader__guide {
+  position: absolute;
+  inset: 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+  pointer-events: none;
+}
