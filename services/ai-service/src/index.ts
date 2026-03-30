@@ -9,7 +9,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Redis } from '@upstash/redis';
-import { PalmReading, PalmAnalysisResult, HandShape, AIModel } from '@palmistry/types';
+import { PalmAnalysisResult, HandShape } from '@palmistry/types';
 import { ErrorCode, AppError, createErrorResponse, logger, logError } from '@palmistry/utils';
 import { validateEnv } from '@palmistry/config/env';
 
@@ -18,7 +18,7 @@ import { validateEnv } from '@palmistry/config/env';
  */
 const env = validateEnv(process.env);
 const app: Express = express();
-const PORT: number = env.PORT || 3003;
+const PORT: number = env.AI_SERVICE_PORT || 3002;
 
 // Initialize AI & Cache
 const genAI = env.GEMINI_API_KEY ? new GoogleGenerativeAI(env.GEMINI_API_KEY) : null;
@@ -38,7 +38,7 @@ const analyzeSchema = z.object({
 /**
  * Perform AI analysis (with Upstash Caching)
  */
-app.post('/analyze', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+app.post('/analyze', async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const validation = analyzeSchema.safeParse(req.body);
     if (!validation.success) {
@@ -87,8 +87,8 @@ app.post('/analyze', async (req: Request, res: Response, next: NextFunction): Pr
     res.status(200).json({ success: true, data: analysisResult });
 
   } catch (error: unknown) {
-    logError('AI analysis failed', { service: 'ai-service', error });
-    next(error);
+    logError('AI analysis failed', { service: 'ai-service', function: 'analyze', error });
+    _next(error);
   }
 });
 
@@ -106,7 +106,7 @@ function getMockAnalysis(): PalmAnalysisResult {
 }
 
 // Error Handler
-app.use((err: unknown, req: Request, res: Response, next: NextFunction): void => {
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction): void => {
   if (err instanceof AppError) {
     res.status(400).json(createErrorResponse(err.code, err.message));
     return;
