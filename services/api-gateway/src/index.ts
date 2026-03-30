@@ -6,7 +6,8 @@
  */
 
 import express, { Express, Request, Response, NextFunction } from 'express';
-import cors from 'morgan';
+import morgan from 'morgan';
+import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -19,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
  */
 const env = validateEnv(process.env);
 const app: Express = express();
-const PORT: number = env.PORT || 8000;
+const PORT: number = env.GATEWAY_PORT || env.PORT || 3001;
 
 // Request ID Middleware
 app.use((req: Request, _res: Response, next: NextFunction) => {

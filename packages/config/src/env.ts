@@ -29,6 +29,12 @@ export const envSchema = z.object({
   UPSTASH_REDIS_URL: z.string().url().optional(),
   UPSTASH_REDIS_TOKEN: z.string().optional(),
   
+  // Service Ports
+  GATEWAY_PORT: z.coerce.number().default(3001),
+  AI_SERVICE_PORT: z.coerce.number().default(3002),
+  IMAGE_SERVICE_PORT: z.coerce.number().default(3003),
+  KEEP_ALIVE_PORT: z.coerce.number().default(3008),
+
   // Image Storage (Cloudinary)
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),

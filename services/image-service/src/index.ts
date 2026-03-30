@@ -15,7 +15,7 @@ import { validateEnv } from '@palmistry/config/env';
  */
 const env = validateEnv(process.env);
 const app: Express = express();
-const PORT: number = env.PORT || 3005;
+const PORT: number = env.IMAGE_SERVICE_PORT || env.PORT || 3003;
 
 // Configure Cloudinary
 cloudinary.config({
