@@ -29,24 +29,3 @@ jobs:
       - name: Verify Build
         run: pnpm turbo run build
 
-      - name: Notify Slack (Optional)
-        if: always()
-        continue-on-error: true
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Deployment to Production: ${{ job.status }}",
-              "attachments": [
-                {
-                  "color": "${{ job.status == 'success' && '#36a64f' || '#ff0000' }}",
-                  "title": "Build Details",
-                  "fields": [
-                    { "title": "Commit", "value": "${{ github.sha }}", "short": true },
-                    { "title": "Branch", "value": "${{ github.ref }}", "short": true }
-                  ]
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
