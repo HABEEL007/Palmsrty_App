@@ -87,6 +87,8 @@ const IMAGE_SERVICE_URL =
   (env as any)["IMAGE_SERVICE_URL"] || "http://palmistry-image-service:10000";
 const AI_SERVICE_URL =
   (env as any)["AI_SERVICE_URL"] || "http://palmistry-ai-service:10000";
+const READING_SERVICE_URL =
+  (env as any)["READING_SERVICE_URL"] || "http://palmistry-reading-service:10000";
 
 app.use(
   "/api/image",
@@ -95,6 +97,14 @@ app.use(
 app.use(
   "/api/ai",
   createProxyMiddleware({ target: AI_SERVICE_URL, changeOrigin: true }),
+);
+app.use(
+  "/api/user/readings",
+  createProxyMiddleware({ 
+    target: READING_SERVICE_URL, 
+    changeOrigin: true,
+    pathRewrite: { "^/api/user/readings": "/readings" }
+  }),
 );
 
 // Global Error Handler

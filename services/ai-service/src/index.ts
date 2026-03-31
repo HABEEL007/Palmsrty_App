@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { GoogleGenerativeAI, Part } from '@google/generative-ai';
 import { Redis } from '@upstash/redis';
 import { PalmAnalysisResult, HandShape } from '@palmistry/types';
-import { ErrorCode, AppError, createErrorResponse, logger, logError } from '@palmistry/utils';
+import { ErrorCode, AppError, createErrorResponse, logger, logError, supabase } from '@palmistry/utils';
 import { validateEnv } from '@palmistry/config/env';
 
 const env = validateEnv(process.env);
@@ -148,10 +148,27 @@ app.post('/analyze', async (req: Request, res: Response, _next: NextFunction): P
       const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
       analysisResult = JSON.parse(cleanJson);
       
-      // Cache the result for 7 days
+      // 1. Cache the result for 7 days
       if (redis) {
         await redis.set(cacheKey, JSON.stringify(analysisResult), { ex: 604800 });
       }
+
+      // 2. Persist to Supabase for History
+      try {
+        const { error: dbError } = await supabase.from('palm_readings').insert({
+          user_id: userId,
+          image_url: leftHandImage || rightHandImage, // Primary image
+          analysis_result: analysisResult,
+          hand_shape: analysisResult.handShape
+        });
+
+        if (dbError) logger.error({ dbError }, 'Failed to persist reading to Supabase');
+        else logger.info({ userId }, 'Reading persisted to history');
+
+      } catch (dbEx) {
+        logger.error({ dbEx }, 'Database exception during persistence');
+      }
+
     } catch (e) {
       logger.error({ text, error: e }, 'Gemini result parse failed');
       throw new AppError(ErrorCode.INTERNAL_ERROR, 'AI produced unreadable data');

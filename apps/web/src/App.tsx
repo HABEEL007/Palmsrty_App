@@ -8,6 +8,7 @@ import { HomePage } from './pages/HomePage';
 import { CaptureView } from './pages/CaptureView';
 import { ProcessingView } from './pages/ProcessingView';
 import { ResultView } from './pages/ResultView';
+import { HistoryView } from './pages/HistoryView';
 import { NavigationShell } from './components/NavigationShell';
 
 const App: React.FC = () => {
@@ -28,7 +29,8 @@ const App: React.FC = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/scan" element={<CaptureView />} />
             <Route path="/processing" element={<ProcessingView />} />
-            <Route path="/reading/:id" element={<ResultView />} />
+            <Route path="/reading/result" element={<ResultView />} />
+            <Route path="/history" element={<HistoryView />} />
           </Routes>
         </div>
       </NavigationShell>
