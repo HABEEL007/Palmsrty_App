@@ -17,9 +17,11 @@ export const ResultView: React.FC = () => {
 
   if (!result) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Typography variant="body">No analysis results found.</Typography>
-        <Button onClick={() => navigate('/scan')}>Go Back</Button>
+      <div className="min-h-screen flex items-center justify-center p-6 text-center">
+        <div className="glass p-8 space-y-4">
+          <Typography variant="body">No analysis results found.</Typography>
+          <Button variant="primary" onClick={() => navigate('/scan')}>Go Back to Scan</Button>
+        </div>
       </div>
     );
   }
@@ -41,32 +43,59 @@ export const ResultView: React.FC = () => {
            style={{ backgroundImage: `url(${imageUrl})` }}
          />
          
-         {/* Line Annotations (Heart Line example) */}
+         {/* Dynamic SVG Line Annotations */}
          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 120">
-            <motion.path 
-               initial={{ pathLength: 0 }}
-               animate={{ pathLength: 1 }}
-               transition={{ duration: 2, delay: 1 }}
-               d="M20 50 Q 50 30, 80 50" 
-               stroke="red" 
-               strokeWidth="0.5" 
-               fill="none" 
-               className="drop-shadow-[0_0_5px_red]"
-            />
-            <motion.path 
-               initial={{ pathLength: 0 }}
-               animate={{ pathLength: 1 }}
-               transition={{ duration: 2, delay: 1.5 }}
-               d="M30 90 Q 50 40, 70 90" 
-               stroke="#06B6D4" 
-               strokeWidth="0.5" 
-               fill="none" 
-               className="drop-shadow-[0_0_5px_#06B6D4]"
-            />
-         </svg>
+             {/* Heart Line (Red) */}
+             <motion.path 
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 2, delay: 1 }}
+                d="M20 50 Q 50 25, 80 45" 
+                stroke="#FF3B30" 
+                strokeWidth={result.majorLines.heartLine.toLowerCase().includes('deep') ? "0.8" : "0.4"} 
+                strokeDasharray={result.majorLines.heartLine.toLowerCase().includes('faded') ? "2 1" : "0"}
+                fill="none" 
+                className="drop-shadow-[0_0_8px_#FF3B30]"
+             />
+             
+             {/* Head Line (Cyan) */}
+             <motion.path 
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 2, delay: 1.5 }}
+                d="M25 65 Q 50 60, 75 75" 
+                stroke="#06B6D4" 
+                strokeWidth={result.majorLines.headLine.toLowerCase().includes('straight') ? "0.6" : "0.4"} 
+                fill="none" 
+                className="drop-shadow-[0_0_8px_#06B6D4]"
+             />
+
+             {/* Life Line (Gold) */}
+             <motion.path 
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 2, delay: 2 }}
+                d="M35 110 Q 50 40, 75 100" 
+                stroke="#F59E0B" 
+                strokeWidth={result.majorLines.lifeLine.toLowerCase().includes('strong') ? "0.8" : "0.4"} 
+                fill="none" 
+                className="drop-shadow-[0_0_8px_#F59E0B]"
+             />
+          </svg>
          
+         {/* Mount Pulsing Points */}
+         <div className="absolute inset-0 pointer-events-none">
+            {/* Apollo Mount Example */}
+            <motion.div 
+               animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+               transition={{ duration: 2, repeat: Infinity }}
+               className="absolute top-[35%] right-[25%] w-3 h-3 bg-secondary-glow rounded-full shadow-neon-secondary"
+            />
+            <div className="absolute top-[35%] right-[20%] text-[8px] font-bold text-secondary-glow opacity-60">APOLLO</div>
+         </div>
+
          <div className="absolute bottom-4 left-4 bg-black/60 px-3 py-1 rounded-full text-xs font-mono tracking-tighter border border-white/10 uppercase">
-            Captured: 30 Mar 2026
+            {new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
          </div>
       </div>
 
@@ -77,16 +106,16 @@ export const ResultView: React.FC = () => {
             key={i}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.2 + 0.5, duration: 0.6 }}
+            transition={{ delay: i * 0.2 + 2.5, duration: 0.6 }}
           >
             <Card variant="glass" isGlow className="border-secondary-glow/10 hover:border-secondary-glow/40">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-surface flex items-center justify-center">
                   {card.icon}
                 </div>
-                <Typography variant="h4" className="font-bold">{card.title}</Typography>
+                <Typography variant="h4" className="font-bold tracking-tight">{card.title}</Typography>
               </div>
-              <Typography variant="body" className="text-muted leading-relaxed">
+              <Typography variant="body" className="text-muted leading-relaxed text-sm">
                 {card.text}
               </Typography>
             </Card>
@@ -95,8 +124,8 @@ export const ResultView: React.FC = () => {
       </div>
 
       {/* Meta Ad Banner Mockup */}
-      <div className="max-w-xl mx-auto mt-8 h-24 glass border-white/5 flex items-center justify-center text-muted font-mono text-xs uppercase tracking-widest opacity-50">
-         Advertisement
+      <div className="max-w-xl mx-auto mt-8 h-24 glass border-white/5 flex items-center justify-center text-muted font-mono text-[10px] uppercase tracking-[0.4em] opacity-30">
+          Advertisement
       </div>
 
       {/* Bottom Sticky Bar */}
