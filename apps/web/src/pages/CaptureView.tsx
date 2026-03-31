@@ -4,21 +4,31 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PalmImageUploader, Button } from '@palmistry/ui';
-import { Camera, RefreshCcw } from 'lucide-react';
+import { Button } from '@palmistry/ui';
+import { Loader2 } from 'lucide-react';
+import { apiClient } from '../api/client';
 
 export const CaptureView: React.FC = () => {
   const navigate = useNavigate();
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('low');
+  const [isCapturing, setIsCapturing] = useState(false);
 
   useEffect(() => {
     async function setupCamera() {
       try {
-        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        const s = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'environment',
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          } 
+        });
         setStream(s);
         if (videoRef.current) videoRef.current.srcObject = s;
+        setQuality('high');
       } catch (e) {
         console.error("Camera access denied", e);
       }
@@ -27,9 +37,41 @@ export const CaptureView: React.FC = () => {
     return () => stream?.getTracks().forEach(t => t.stop());
   }, []);
 
-  const handleCapture = () => {
-    // Simulation: capture image and go to processing
-    navigate('/processing');
+  const handleCapture = async () => {
+    if (!videoRef.current || !canvasRef.current || isCapturing) return;
+
+    setIsCapturing(true);
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/jpeg', 0.8);
+
+      try {
+        // 1. Upload to Image Service
+        const response = await apiClient.post('/api/image/upload', {
+          image: imageData,
+          userId: '00000000-0000-0000-0000-000000000000' // Placeholder UUID
+        });
+
+        if (response.data.success) {
+          const { imageUrl } = response.data.data;
+          // 2. Navigate to processing with the image URL
+          navigate('/processing', { state: { imageUrl } });
+        }
+      } catch (error) {
+        console.error("Upload failed", error);
+        alert("Failed to upload image. Please try again.");
+      } finally {
+        setIsCapturing(false);
+      }
+    }
   };
 
   return (
@@ -39,16 +81,19 @@ export const CaptureView: React.FC = () => {
           ref={videoRef} 
           autoPlay 
           playsInline 
-          className="w-full h-full object-cover opacity-60"
+          className="w-full h-full object-cover opacity-80"
         />
         
+        {/* Hidden Canvas for Capture */}
+        <canvas ref={canvasRef} className="hidden" />
+
         {/* SVG Guide Overlay */}
         <div className="absolute inset-0 flex items-center justify-center p-12 pointer-events-none">
-          <svg viewBox="0 0 100 100" className="w-full h-full opacity-30">
+          <svg viewBox="0 0 100 100" className="w-full h-full opacity-40">
             <path 
               d="M30 90 Q 50 10, 70 90" 
               stroke="var(--color-primary)" 
-              strokeWidth="1" 
+              strokeWidth="0.5" 
               fill="transparent" 
               strokeDasharray="4 2"
             />
@@ -63,10 +108,7 @@ export const CaptureView: React.FC = () => {
               {quality === 'high' ? 'IDEAL LIGHTING' : 'IMPROVING LIGHTING...'}
             </span>
           </div>
-          <div className="text-xs text-muted flex flex-col items-end">
-            <span>✓ Hand detected</span>
-            <span>⟳ Align frame</span>
-          </div>
+          {isCapturing && <Loader2 className="animate-spin text-primary w-5 h-5" />}
         </div>
 
         {/* Bottom Actions */}
@@ -74,7 +116,8 @@ export const CaptureView: React.FC = () => {
           <div className="flex items-center gap-4">
              <button 
                onClick={handleCapture}
-               className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-transparent active:scale-95 transition-transform"
+               disabled={isCapturing}
+               className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-transparent active:scale-95 transition-transform disabled:opacity-50"
              >
                <div className="w-16 h-16 rounded-full bg-white scale-90" />
              </button>

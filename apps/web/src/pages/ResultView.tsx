@@ -4,23 +4,42 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { PalmAnalysisResult } from '@palmistry/types';
 import { Card, Typography, Button } from '@palmistry/ui';
-import { Share2, FileDown, Plus, Heart, Brain, Zap, Shield, HelpCircle } from 'lucide-react';
+import { Share2, FileDown, Plus, Heart, Zap, Shield, HelpCircle } from 'lucide-react';
 
 export const ResultView: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const result = location.state?.result as PalmAnalysisResult;
+  const imageUrl = location.state?.imageUrl;
+
+  if (!result) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Typography variant="body">No analysis results found.</Typography>
+        <Button onClick={() => navigate('/scan')}>Go Back</Button>
+      </div>
+    );
+  }
+
   const cards = [
-    { title: "Personality", icon: <Zap className="text-secondary-glow" />, text: "You possess a dynamic and adaptable personality. Your curiosity drives you toward new experiences, making you a natural explorer." },
-    { title: "Career", icon: <Shield className="text-primary-neon" />, text: "Your career path is likely to be marked by leadership and innovation. You thrive in environments that challenge your analytical mind." },
-    { title: "Love", icon: <Heart className="text-red-500" />, text: "You value emotional depth and sincere connections. Your ability to empathize creates strong bonds with those who share your values." },
-    { title: "Health", icon: <Zap className="text-green-500" />, text: "Your energy levels are generally high, but ensure you manage stress through creative outlets or physical movement." },
-    { title: "Advice", icon: <HelpCircle className="text-accent" />, text: "Trust your intuition when facing major crossroads. Your hands suggest that your first instinct is often aligned with your true path." },
+    { title: "Personality", icon: <Zap className="text-secondary-glow" />, text: result.personality.traits.join(", ") + ". " + result.personality.strengths.join(", ") },
+    { title: "Career", icon: <Shield className="text-primary-neon" />, text: result.career.suitability + ": " + result.career.advice },
+    { title: "Love", icon: <Heart className="text-red-500" />, text: result.relationships.approach + ". " + result.relationships.advice },
+    { title: "Health", icon: <Zap className="text-green-500" />, text: result.health.vitality + ". " + (result.health.concerns || "No major concerns.") },
+    { title: "Expert Advice", icon: <HelpCircle className="text-accent" />, text: result.advice },
   ];
 
   return (
     <main className="min-h-screen pt-20 pb-32 px-6">
       {/* Annotated Palm Image */}
       <div className="relative w-full max-w-md mx-auto aspect-[4/5] glass border-secondary-glow/30 mb-8 overflow-hidden group">
-         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542332213-9b5a5a3fab35?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center grayscale opacity-40 group-hover:grayscale-0 transition-all duration-700" />
+         <div 
+           className="absolute inset-0 bg-cover bg-center grayscale-50 opacity-80 group-hover:grayscale-0 transition-all duration-700" 
+           style={{ backgroundImage: `url(${imageUrl})` }}
+         />
          
          {/* Line Annotations (Heart Line example) */}
          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 120">
@@ -90,7 +109,7 @@ export const ResultView: React.FC = () => {
               <FileDown size={18} />
             </Button>
          </div>
-         <Button variant="primary" className="gap-2 neon-glow">
+         <Button variant="primary" className="gap-2 neon-glow" onClick={() => navigate('/scan')}>
             <Plus size={18} />
             New Reading
          </Button>
