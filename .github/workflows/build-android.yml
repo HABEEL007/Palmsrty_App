@@ -19,6 +19,8 @@ jobs:
       
       - name: Install pnpm
         uses: pnpm/action-setup@v4.1.0
+        with:
+          version: 9.15.9
       
       - name: Setup Node.js
         uses: actions/setup-node@v4.4.0
@@ -27,10 +29,10 @@ jobs:
           cache: 'pnpm'
       
       - name: Install dependencies
-        run: pnpm install --force
+        run: pnpm install --frozen-lockfile
       
-      - name: Build production app
-        run: pnpm turbo run build --filter=@palmistry/web
+      - name: Build web app
+        run: pnpm build --filter=@palmistry/web
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}

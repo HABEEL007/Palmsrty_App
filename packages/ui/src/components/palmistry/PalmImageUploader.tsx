@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { Camera, Upload, CheckCircle, Smartphone } from "lucide-react";
 import { Button } from "../primitives/Button";
+import { isValidImageType, isValidFileSize } from "@palmistry/utils/image-utils";
 import "./PalmImageUploader.css";
 
 export interface PalmImageUploaderProps {
@@ -21,13 +22,26 @@ export const PalmImageUploader: React.FC<PalmImageUploaderProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      onImageCaptured(file);
+    if (!file) return;
+
+    setError(null);
+
+    if (!isValidImageType(file.type)) {
+      setError("Please upload a valid image (JPG, PNG, or WEBP).");
+      return;
     }
+
+    if (!isValidFileSize(file.size)) {
+      setError("File size exceeds 10MB limit.");
+      return;
+    }
+
+    setPreview(URL.createObjectURL(file));
+    onImageCaptured(file);
   };
 
   return (
@@ -42,7 +56,7 @@ export const PalmImageUploader: React.FC<PalmImageUploaderProps> = ({
           <div className="palm-uploader__overlay">
             <CheckCircle className="palm-uploader__check" />
             <span>Image Captured</span>
-            <Button variant="ghost" size="sm" onClick={() => setPreview(null)}>
+            <Button variant="ghost" size="sm" onClick={() => { setPreview(null); setError(null); }}>
               Retake
             </Button>
           </div>
@@ -60,7 +74,11 @@ export const PalmImageUploader: React.FC<PalmImageUploaderProps> = ({
             <Upload className="palm-uploader__upload-icon" />
           </div>
           <h3>Scan Your {side.charAt(0).toUpperCase() + side.slice(1)} Hand</h3>
-          <p>Place your hand flat in good lighting for clear results.</p>
+          {error ? (
+            <p className="palm-error-text">{error}</p>
+          ) : (
+            <p>Place your hand flat in good lighting for clear results.</p>
+          )}
 
           <div className="palm-uploader__actions">
             <Button

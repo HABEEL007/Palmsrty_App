@@ -93,3 +93,13 @@
   border-radius: 2rem;
   pointer-events: none;
 }
+
+.palm-error-text {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  max-width: 250px;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
