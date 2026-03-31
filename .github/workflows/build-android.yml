@@ -27,7 +27,7 @@ jobs:
           cache: 'pnpm'
       
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --force
       
       - name: Build production app
         run: pnpm turbo run build --filter=@palmistry/web
