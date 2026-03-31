@@ -5,79 +5,128 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@palmistry/ui';
-import { Terminal, Fingerprint, Sparkles } from 'lucide-react';
+import { Button, Card, Typography } from '@palmistry/ui';
+import { Camera, Zap, Brain, Layers, Star } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const headline = "Reveal What Your Hands Say";
+
+  const quickStats = [
+    { label: "Readings", value: "12", icon: <Layers size={18} /> },
+    { label: "Accuracy", value: "98%", icon: <Zap size={18} /> },
+    { label: "Insights", value: "45", icon: <Brain size={18} /> },
+  ];
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-      {/* Animated Headline */}
-      <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight leading-tight max-w-3xl">
-        {headline.split(" ").map((word, i) => (
-          <motion.span
+    <main className="p-6 space-y-8 animate-in fade-in duration-700 max-w-2xl mx-auto">
+      {/* Greeting Section */}
+      <section className="space-y-2 mt-4">
+        <Typography variant="caption" className="uppercase tracking-[0.3em] text-primary-neon font-bold">
+           Welcome back, Seeker
+        </Typography>
+        <Typography variant="h1" className="text-4xl font-extrabold tracking-tighter leading-tight">
+           Your Destiny is <br/>
+           <span className="text-secondary-glow italic">in your hands.</span>
+        </Typography>
+      </section>
+
+      {/* Quick Stats Grid */}
+      <section className="grid grid-cols-3 gap-3">
+        {quickStats.map((stat, i) => (
+          <motion.div 
             key={i}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.15, duration: 0.8 }}
-            className="inline-block mr-3 bg-gradient-to-r from-primary-neon to-secondary-glow bg-clip-text text-transparent"
+            transition={{ delay: i * 0.1 }}
+            className="glass p-4 flex flex-col items-center gap-1 border-white/5 active:scale-95 transition-transform"
           >
-            {word}
-          </motion.span>
-        ))}
-      </h1>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1 }}
-        className="text-lg md:text-xl text-muted mb-10 max-w-lg"
-      >
-        Your palm is a biological blueprint. Unlock the ancient secrets of your destiny with advanced AI vision.
-      </motion.p>
-
-      {/* Hero CTAs */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.8, duration: 0.5 }}
-        className="flex flex-wrap gap-4 justify-center"
-      >
-        <Button 
-          variant="primary" 
-          size="lg" 
-          className="neon-glow"
-          onClick={() => navigate('/scan')}
-        >
-          Scan Palm Now
-        </Button>
-        <Button variant="ghost" size="lg">
-          Upload Photo
-        </Button>
-      </motion.div>
-
-      {/* Features / How it works */}
-      <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
-        {[
-          { icon: <Fingerprint />, title: "Precision Mapping", desc: "AI identifies major lines, mounts, and unique hand geometry." },
-          { icon: <Terminal />, title: "Line Analysis", desc: "Depth readings of Heart, Head, and Life lines for future insights." },
-          { icon: <Sparkles />, title: "Personal Guidance", desc: "Detailed personality and career advice based on palmistry." },
-        ].map((feat, i) => (
-          <motion.div
-            key={i}
-            whileHover={{ scale: 1.05 }}
-            className="glass p-8 text-left"
-          >
-            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary-neon mb-4">
-              {feat.icon}
-            </div>
-            <h3 className="text-xl font-bold mb-2">{feat.title}</h3>
-            <p className="text-muted">{feat.desc}</p>
+             <div className="text-primary-neon opacity-70 mb-1">{stat.icon}</div>
+             <span className="text-xl font-bold tracking-tight">{stat.value}</span>
+             <span className="text-[9px] uppercase font-bold text-muted">{stat.label}</span>
           </motion.div>
         ))}
-      </div>
+      </section>
+
+      {/* Call to Action Card */}
+      <section>
+        <Card variant="glass" isGlow className="p-0 relative overflow-hidden group border-primary/20">
+           <div className="p-8 relative z-10 space-y-4">
+              <div className="flex items-center gap-2 text-secondary-glow text-xs font-bold uppercase tracking-widest">
+                 <Star size={14} fill="currentColor" />
+                 Premium Feature
+              </div>
+              <Typography variant="h3" className="font-bold tracking-tight text-2xl">Ready for a <br/>New Reading?</Typography>
+              <Typography variant="body" className="text-muted text-sm max-w-[220px] leading-relaxed">
+                 Analyze your palm lines with our latest Gemini 1.5 Flash AI engine for 99% precision.
+              </Typography>
+              <Button 
+                variant="primary" 
+                className="w-full gap-3 neon-glow mt-2 h-14 text-base font-bold"
+                onClick={() => navigate('/scan')}
+              >
+                 <Camera size={20} />
+                 Start Scanning
+              </Button>
+           </div>
+           
+           {/* Decorative Elements */}
+           <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-colors" />
+           <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+              <Camera size={160} strokeWidth={0.5} />
+           </div>
+        </Card>
+      </section>
+
+      {/* Recent Activity */}
+      <section className="space-y-4">
+         <div className="flex justify-between items-end">
+            <Typography variant="h4" className="font-bold tracking-tight text-lg">Recent Insights</Typography>
+            <Typography variant="caption" className="text-primary-neon font-bold cursor-pointer hover:underline">View All</Typography>
+         </div>
+         
+         <div className="space-y-3">
+            {[
+              { date: "Yesterday", type: "Career Path", img: "https://images.unsplash.com/photo-1542332213-9b5a5a3fab35" },
+              { date: "3 Days ago", type: "Love & Harmony", img: "https://images.unsplash.com/photo-1510673422415-38c538ced987" }
+            ].map((reading, i) => (
+               <motion.div 
+                 key={i} 
+                 whileTap={{ scale: 0.98 }}
+                 className="flex items-center gap-4 p-4 glass border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
+               >
+                  <div className="w-14 h-14 rounded-xl bg-surface border border-white/5 flex items-center justify-center overflow-hidden">
+                     <img 
+                       src={`${reading.img}?auto=format&fit=crop&q=80&w=100`} 
+                       className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+                       alt="past reading"
+                     />
+                  </div>
+                  <div className="flex-1">
+                     <Typography variant="body" className="font-bold text-sm">{reading.type}</Typography>
+                     <Typography variant="caption" className="text-muted text-[10px]">{reading.date} • High Confidence</Typography>
+                  </div>
+                  <div className="bg-primary/10 p-2 rounded-full text-primary-neon opacity-0 group-hover:opacity-100 transition-opacity">
+                     <Zap size={14} />
+                  </div>
+               </motion.div>
+            ))}
+         </div>
+      </section>
+
+      {/* Pro Tip Banner */}
+      <section className="p-5 glass border-accent/20 bg-accent/5 rounded-2xl">
+         <div className="flex gap-4 items-center">
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent">
+               <Star size={18} fill="currentColor" />
+            </div>
+            <Typography variant="body" className="text-muted text-xs leading-tight">
+               <span className="text-white font-bold block mb-1">PRO TIP</span>
+               "The stars incline, but do not bind. Your daily choices shape your life lines."
+            </Typography>
+         </div>
+      </section>
+      
+      <div className="h-10" /> {/* Bottom Spacer */}
     </main>
   );
 };
