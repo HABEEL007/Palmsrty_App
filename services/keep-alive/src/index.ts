@@ -1,19 +1,18 @@
 /**
  * @file index.ts
- * @author Antigravity
- * @date 2026-03-30
  * @description Keep-Alive Service - prevents Render.com free tier hibernation.
  */
 
 const SERVICES = [
-  'https://palmistry-gateway.onrender.com/health',
+  'https://palmistry-api-gateway.onrender.com/health',
   'https://palmistry-ai-service.onrender.com/health',
   'https://palmistry-image-service.onrender.com/health',
 ];
 
 // Ping every 10 minutes (600,000 ms)
 const startHeartbeat = () => {
-  console.log('💓 Starting keep-alive heartbeat for Render services...');
+  console.log('💓 Heartbeat pulsing for:');
+  SERVICES.forEach(url => console.log(` - ${url}`));
   
   setInterval(async () => {
     for (const url of SERVICES) {
@@ -23,12 +22,12 @@ const startHeartbeat = () => {
         const duration = Date.now() - start;
         
         if (response.ok) {
-          console.log(`✅ [${new Date().toISOString()}] Pinged: ${url} (${duration}ms)`);
+          console.log(`✅ [${new Date().toISOString()}] Alive: ${url} (${duration}ms)`);
         } else {
-          console.warn(`⚠️ [${new Date().toISOString()}] Ping Failed: ${url} | Status: ${response.status}`);
+          console.warn(`⚠️ [${new Date().toISOString()}] Warning: ${url} | Status: ${response.status}`);
         }
       } catch (error) {
-        console.error(`❌ [${new Date().toISOString()}] Ping Error: ${url} | ${error}`);
+        console.error(`❌ [${new Date().toISOString()}] Down/Error: ${url} | ${error}`);
       }
     }
   }, 10 * 60 * 1000);
