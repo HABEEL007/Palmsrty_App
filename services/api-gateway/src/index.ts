@@ -91,6 +91,8 @@ const READING_SERVICE_URL =
   (env as any)["READING_SERVICE_URL"] || "http://palmistry-reading-service:10000";
 const AD_SERVICE_URL =
   (env as any)["AD_SERVICE_URL"] || "http://palmistry-ad-service:10000";
+const REPORT_SERVICE_URL =
+  (env as any)["REPORT_SERVICE_URL"] || "http://palmistry-report-service:10000";
 
 app.use(
   "/api/image",
@@ -103,6 +105,14 @@ app.use(
 app.use(
   "/api/ads",
   createProxyMiddleware({ target: AD_SERVICE_URL, changeOrigin: true }),
+);
+app.use(
+  "/api/report",
+  createProxyMiddleware({ 
+    target: REPORT_SERVICE_URL, 
+    changeOrigin: true,
+    pathRewrite: { "^/api/report": "/report" }
+  }),
 );
 app.use(
   "/api/user/readings",
