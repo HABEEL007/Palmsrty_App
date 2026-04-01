@@ -1,9 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "VITE_API_URL",
+    "VITE_SUPABASE_URL",
+    "VITE_SUPABASE_ANON_KEY",
+    "GEMINI_API_KEY",
+    "UPSTASH_REDIS_REST_URL",
+    "UPSTASH_REDIS_REST_TOKEN"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "storybook-static/**"]
+      "outputs": ["dist/**", "dist/index.js", ".next/**", "storybook-static/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
