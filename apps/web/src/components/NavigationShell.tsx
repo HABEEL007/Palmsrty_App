@@ -5,7 +5,8 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, History, User, Camera, Layers } from 'lucide-react';
+import { Home, History, User, Camera, Layers, Languages, Settings } from 'lucide-react';
+import { Typography, Button } from '@palmistry/ui';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -37,18 +38,26 @@ export const NavigationShell: React.FC<{ children: React.ReactNode }> = ({ child
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-text overflow-x-hidden">
-      {/* App Header (Logo) */}
+      {/* App Header (Logo & Language Switcher) */}
       {!isHidden && (
         <header className="fixed top-0 inset-x-0 h-20 px-6 flex items-center justify-between z-40 bg-gradient-to-b from-background to-transparent pointer-events-none">
            <div className="flex items-center gap-2 pointer-events-auto cursor-pointer" onClick={() => navigate('/')}>
-              <div className="w-8 h-8 bg-primary-neon rounded-lg flex items-center justify-center shadow-neon-primary">
-                 <Layers size={18} className="text-white" />
+              <div className="w-8 h-8 bg-primary-neon rounded-lg flex items-center justify-center shadow-neon-primary text-white">
+                 <Layers size={18} />
               </div>
               <span className="font-extrabold text-xl tracking-tighter italic">PALMSTRY <span className="text-primary-neon">AI</span></span>
            </div>
            
-           <div className="p-2 glass border-white/5 pointer-events-auto cursor-pointer">
-              <User size={20} className="text-muted" />
+           <div className="flex items-center gap-3 pointer-events-auto">
+              {/* Language Switcher Placeholder Button */}
+              <button className="flex items-center gap-2 px-3 py-1.5 glass border-white/5 bg-white/5 rounded-2xl group hover:border-primary-neon/30 transition-all">
+                 <Languages size={14} className="text-muted group-hover:text-primary-neon" />
+                 <span className="text-[10px] font-bold text-white tracking-widest leading-none">EN</span>
+              </button>
+
+              <div className="p-2 glass border-white/5 cursor-pointer hover:bg-white/5 transition-colors rounded-xl">
+                 <Settings size={18} className="text-muted" />
+              </div>
            </div>
         </header>
       )}
