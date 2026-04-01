@@ -17,14 +17,35 @@ const PORT: number = env.AD_SERVICE_PORT || env.PORT || 3007;
 app.use(express.json());
 
 /**
- * Get relevant ad based on user context.
+ * Get Meta Ads Placement Configuration
  */
-app.get('/ads', (_req: Request, res: Response): void => {
-  const ads = [
-    { id: '1', title: 'Premium Palmistry PDF', link: '/premium' },
-    { id: '2', title: 'Unlock Ancestors Reading', link: '/ancestors' },
-  ];
-  res.json({ success: true, data: ads });
+app.get('/config', (_req: Request, res: Response): void => {
+  const config = {
+    meta_app_id: process.env['META_APP_ID'] || '123456789',
+    placements: {
+      banner: 'YOUR_BANNER_PLACEMENT_ID',
+      interstitial: 'YOUR_INTERSTITIAL_PLACEMENT_ID',
+      rewarded: 'YOUR_REWARDED_PLACEMENT_ID'
+    },
+    rules: {
+      interstitial_frequency: 2, // Every 2 readings
+      min_time_between_ads: 60000 // 60 seconds
+    }
+  };
+  res.json({ success: true, data: config });
+});
+
+/**
+ * Track Ad Activity (Impression/Click)
+ */
+app.post('/track', async (req: Request, res: Response): Promise<void> => {
+  const { type, placement_id, userId } = req.body;
+  
+  logger.info({ type, placement_id, userId }, 'Ad activity tracked');
+  
+  // Here we would typically save to Supabase ad_stats table
+  // For now we log it and return success
+  res.json({ success: true, message: 'Tracked successfully' });
 });
 
 /**

@@ -7,6 +7,7 @@ const SERVICES = [
   'https://palmistry-api-gateway.onrender.com/health',
   'https://palmistry-ai-service.onrender.com/health',
   'https://palmistry-image-service.onrender.com/health',
+  'https://palmistry-ad-service.onrender.com/health',
 ];
 
 // Ping every 10 minutes (600,000 ms)
