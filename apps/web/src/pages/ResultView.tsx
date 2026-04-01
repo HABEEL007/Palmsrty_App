@@ -26,6 +26,37 @@ export const ResultView: React.FC = () => {
     );
   }
 
+  const handleDownloadPDF = async () => {
+    try {
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${apiBase}/api/report/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          reading: {
+            id: Math.random().toString(36).substring(7),
+            analysis_result: result,
+            hand_shape: result.handShape
+          } 
+        })
+      });
+
+      if (!response.ok) throw new Error('PDF generation failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Palmstry_Report_${new Date().getTime()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Could not generate PDF. Please try again later.');
+    }
+  };
+
   const cards = [
     { title: "Personality", icon: <Zap className="text-secondary-glow" />, text: result.personality.traits.join(", ") + ". " + result.personality.strengths.join(", ") },
     { title: "Career", icon: <Shield className="text-primary-neon" />, text: result.career.suitability + ": " + result.career.advice },
@@ -134,8 +165,9 @@ export const ResultView: React.FC = () => {
             <Button variant="ghost" size="sm" className="gap-2">
               <Share2 size={18} />
             </Button>
-            <Button variant="ghost" size="sm" className="gap-2">
+            <Button variant="ghost" size="sm" className="gap-2 hover:text-primary-neon" onClick={handleDownloadPDF}>
               <FileDown size={18} />
+              <span className="text-[10px] font-bold uppercase">PDF</span>
             </Button>
          </div>
          <Button variant="primary" className="gap-2 neon-glow" onClick={() => navigate('/scan')}>
