@@ -4,10 +4,10 @@
     "tagline": "اكتشف ما تكشفه يداك"
   },
   "auth": {
-    "welcomeBack": "أكمل قراءتك",
+    "welcomeBack": "أهلاً بك مجدداً",
     "continueWithGoogle": "المتابعة مع جوجل",
     "continueWithApple": "المتابعة مع آبل",
-    "termsNote": "بمتابعتك، توافق على شروط الخدمة وسياسة الخصوصية"
+    "termsNote": "بمتابعتك، توافق على شروط الخدمة الخاصة بنا"
   },
   "onboarding": {
     "title": "قبل أن نبدأ...",

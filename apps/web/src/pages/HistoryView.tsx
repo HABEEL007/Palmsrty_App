@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { Typography, Card, Button } from '@palmistry/ui';
 import { Calendar, ChevronRight, Zap, Loader2 } from 'lucide-react';
 import { apiClient } from '../api/client';
+import { useAuth } from '../features/auth/hooks/useAuth';
 
 interface ReadingItem {
   id: string;
@@ -18,15 +19,15 @@ interface ReadingItem {
 
 export const HistoryView: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [readings, setReadings] = useState<ReadingItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHistory = async () => {
+      if (!user) return;
       try {
-        // Placeholder userId. In a real app, this comes from Auth Context
-        const userId = '00000000-0000-0000-0000-000000000000';
-        const response = await apiClient.get(`/api/user/readings/${userId}`);
+        const response = await apiClient.get(`/api/user/readings/${user.id}`);
         if (response.data.success) {
           setReadings(response.data.data);
         }

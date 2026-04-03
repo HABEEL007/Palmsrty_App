@@ -4,10 +4,10 @@
     "tagline": "जानें आपके हाथ क्या कहते हैं"
   },
   "auth": {
-    "welcomeBack": "अपनी रीडिंग जारी रखें",
+    "welcomeBack": "स्वागत है",
     "continueWithGoogle": "Google से जारी रखें",
     "continueWithApple": "Apple से जारी रखें",
-    "termsNote": "जारी रखकर, आप हमारी सेवा शर्तें और गोपनीयता नीति से सहमत होते हैं"
+    "termsNote": "जारी रखकर, आप हमारी सेवा की शर्तों से सहमत होते हैं"
   },
   "onboarding": {
     "title": "शुरू करने से पहले...",

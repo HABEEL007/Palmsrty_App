@@ -1,25 +1,25 @@
 {
-  "short_name": "Palmistry",
-  "name": "PALMSTRY AI - Your Destiny in Your Hands",
+  "name": "Palmistry AI — Read Your Destiny",
+  "short_name": "Palmistry AI",
+  "description": "AI-powered palm reading using GPT-4o vision",
+  "theme_color": "#0B0F1A",
+  "background_color": "#0B0F1A",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "logo192.png",
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "any maskable"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#0B0F1A",
-  "background_color": "#0B0F1A"
+  ]
 }

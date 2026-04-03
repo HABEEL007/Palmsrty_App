@@ -7,9 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@palmistry/ui';
 import { Loader2 } from 'lucide-react';
 import { apiClient } from '../api/client';
+import { useAuth } from '../features/auth/hooks/useAuth';
 
 export const CaptureView: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -57,7 +59,7 @@ export const CaptureView: React.FC = () => {
         // 1. Upload to Image Service
         const response = await apiClient.post('/api/image/upload', {
           image: imageData,
-          userId: '00000000-0000-0000-0000-000000000000' // Placeholder UUID
+          userId: user?.id || '00000000-0000-0000-0000-000000000000'
         });
 
         if (response.data.success) {

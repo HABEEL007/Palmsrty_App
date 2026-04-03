@@ -9,15 +9,12 @@ import { z } from 'zod';
 
 /** Zod schema defining all required and optional frontend env vars */
 const envSchema = z.object({
-  /** Supabase project URL */
-  VITE_SUPABASE_URL: z.string().url('VITE_SUPABASE_URL must be a valid URL'),
-  /** Supabase anonymous (public) key */
-  VITE_SUPABASE_ANON_KEY: z.string().min(1, 'VITE_SUPABASE_ANON_KEY is required'),
-  /** Cloudinary cloud name for image uploads */
-  VITE_CLOUDINARY_CLOUD_NAME: z.string().min(1, 'VITE_CLOUDINARY_CLOUD_NAME is required'),
-  /** Application environment */
-  VITE_APP_ENV: z
-    .enum(['development', 'staging', 'production'])
+  VITE_SUPABASE_URL: z.string().url(),
+  VITE_SUPABASE_ANON_KEY: z.string().min(1),
+  VITE_OPENAI_API_KEY: z.string().startsWith('sk-').optional(),
+  VITE_CLOUDINARY_CLOUD_NAME: z.string().min(1),
+  VITE_META_APP_ID: z.string().min(1).optional(),
+  VITE_APP_ENV: z.enum(['development', 'staging', 'production'])
     .default('development'),
 });
 

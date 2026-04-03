@@ -5,8 +5,8 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, History, User, Camera, Layers, Languages, Settings } from 'lucide-react';
-import { Typography, Button } from '@palmistry/ui';
+import { Home, History, User, Camera, Layers, Settings } from 'lucide-react';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -49,11 +49,8 @@ export const NavigationShell: React.FC<{ children: React.ReactNode }> = ({ child
            </div>
            
            <div className="flex items-center gap-3 pointer-events-auto">
-              {/* Language Switcher Placeholder Button */}
-              <button className="flex items-center gap-2 px-3 py-1.5 glass border-white/5 bg-white/5 rounded-2xl group hover:border-primary-neon/30 transition-all">
-                 <Languages size={14} className="text-muted group-hover:text-primary-neon" />
-                 <span className="text-[10px] font-bold text-white tracking-widest leading-none">EN</span>
-              </button>
+              {/* Functional Language Switcher */}
+              <LanguageSwitcher />
 
               <div className="p-2 glass border-white/5 cursor-pointer hover:bg-white/5 transition-colors rounded-xl">
                  <Settings size={18} className="text-muted" />

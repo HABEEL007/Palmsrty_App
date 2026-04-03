@@ -1,20 +1,18 @@
-/**
- * @file HomePage.tsx
- */
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import { Button, Card, Typography } from '@palmistry/ui';
 import { Camera, Zap, Brain, Layers, Star } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const quickStats = [
-    { label: "Readings", value: "12", icon: <Layers size={18} /> },
-    { label: "Accuracy", value: "98%", icon: <Zap size={18} /> },
-    { label: "Insights", value: "45", icon: <Brain size={18} /> },
+    { label: t('home.stats.readings'), value: "12", icon: <Layers size={18} /> },
+    { label: t('home.stats.accuracy'), value: "98%", icon: <Zap size={18} /> },
+    { label: t('home.stats.insights'), value: "45", icon: <Brain size={18} /> },
   ];
 
   return (
@@ -22,11 +20,13 @@ export const HomePage: React.FC = () => {
       {/* Greeting Section */}
       <section className="space-y-2 mt-4">
         <Typography variant="caption" className="uppercase tracking-[0.3em] text-primary-neon font-bold">
-           Welcome back, Seeker
+           {t('home.welcome')}
         </Typography>
         <Typography variant="h1" className="text-4xl font-extrabold tracking-tighter leading-tight">
-           Your Destiny is <br/>
-           <span className="text-secondary-glow italic">in your hands.</span>
+           <Trans i18nKey="home.headline">
+              Your Destiny is <br/>
+              <span className="text-secondary-glow italic">in your hands.</span>
+           </Trans>
         </Typography>
       </section>
 
@@ -53,11 +53,13 @@ export const HomePage: React.FC = () => {
            <div className="p-8 relative z-10 space-y-4">
               <div className="flex items-center gap-2 text-secondary-glow text-xs font-bold uppercase tracking-widest">
                  <Star size={14} fill="currentColor" />
-                 Premium Feature
+                 {t('home.premiumFeature')}
               </div>
-              <Typography variant="h3" className="font-bold tracking-tight text-2xl">Ready for a <br/>New Reading?</Typography>
+              <Typography variant="h3" className="font-bold tracking-tight text-2xl">
+                <Trans i18nKey="home.ctaTitle">Ready for a <br/>New Reading?</Trans>
+              </Typography>
               <Typography variant="body" className="text-muted text-sm max-w-[220px] leading-relaxed">
-                 Analyze your palm lines with our latest Gemini 1.5 Flash AI engine for 99% precision.
+                 {t('home.ctaBody')}
               </Typography>
               <Button 
                 variant="primary" 
@@ -65,7 +67,7 @@ export const HomePage: React.FC = () => {
                 onClick={() => navigate('/scan')}
               >
                  <Camera size={20} />
-                 Start Scanning
+                 {t('home.ctaButton')}
               </Button>
            </div>
            
@@ -80,8 +82,8 @@ export const HomePage: React.FC = () => {
       {/* Recent Activity */}
       <section className="space-y-4">
          <div className="flex justify-between items-end">
-            <Typography variant="h4" className="font-bold tracking-tight text-lg">Recent Insights</Typography>
-            <Typography variant="caption" className="text-primary-neon font-bold cursor-pointer hover:underline">View All</Typography>
+            <Typography variant="h4" className="font-bold tracking-tight text-lg">{t('home.recentTitle')}</Typography>
+            <Typography variant="caption" className="text-primary-neon font-bold cursor-pointer hover:underline">{t('home.viewAll')}</Typography>
          </div>
          
          <div className="space-y-3">
@@ -120,8 +122,8 @@ export const HomePage: React.FC = () => {
                <Star size={18} fill="currentColor" />
             </div>
             <Typography variant="body" className="text-muted text-xs leading-tight">
-               <span className="text-white font-bold block mb-1">PRO TIP</span>
-               "The stars incline, but do not bind. Your daily choices shape your life lines."
+               <span className="text-white font-bold block mb-1">{t('home.proTip')}</span>
+               "{t('home.proTipText')}"
             </Typography>
          </div>
       </section>

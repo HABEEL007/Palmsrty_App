@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Typography } from '@palmistry/ui';
 import { apiClient } from '../api/client';
+import { useAuth } from '../features/auth/hooks/useAuth';
 
 const FACTS = [
   "Your life line's length actually indicates your vitality, not lifespan.",
@@ -24,6 +25,7 @@ const STEPS = [
 
 export const ProcessingView: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const location = useLocation();
   const [stepIndex, setStepIndex] = useState(0);
   const [factIndex, setFactIndex] = useState(0);
@@ -52,7 +54,7 @@ export const ProcessingView: React.FC = () => {
         }
 
         const response = await apiClient.post('/api/ai/analyze', {
-          userId: '00000000-0000-0000-0000-000000000000',
+          userId: user?.id || '00000000-0000-0000-0000-000000000000',
           leftHandImage: imageUrl // For now using one photo as the primary source
         });
 

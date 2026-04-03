@@ -12,6 +12,7 @@ import { CaptureView } from './pages/CaptureView';
 import { ProcessingView } from './pages/ProcessingView';
 import { ResultView } from './pages/ResultView';
 import { HistoryView } from './pages/HistoryView';
+import { ProfileView } from './pages/ProfileView';
 import { NavigationShell } from './components/NavigationShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { LoginPage } from './features/auth/components/LoginPage';
@@ -96,6 +97,7 @@ function AppRoutes() {
                   <Route path="/processing" element={<ProcessingView />} />
                   <Route path="/reading/result" element={<ResultView />} />
                   <Route path="/history" element={<HistoryView />} />
+                  <Route path="/profile" element={<ProfileView />} />
                   {/* Fallback for unknown routes */}
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
