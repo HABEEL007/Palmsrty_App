@@ -1,0 +1,52 @@
+{
+  "app": {
+    "name": "Palmistry AI",
+    "tagline": "Discover what your hands reveal"
+  },
+  "auth": {
+    "welcomeBack": "Continue to your reading",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "termsNote": "By continuing, you agree to our Terms of Service and Privacy Policy"
+  },
+  "onboarding": {
+    "title": "Before we begin...",
+    "stepOf": "Step {{current}} of {{total}}"
+  },
+  "capture": {
+    "title": "Scan Your Palm",
+    "instruction": "Place your hand flat with fingers slightly apart",
+    "checkHand": "Hand detected",
+    "checkLight": "Good lighting",
+    "checkFocus": "Clear focus",
+    "captureButton": "Capture Reading",
+    "uploadButton": "Upload from Gallery"
+  },
+  "processing": {
+    "analyzing": "Analyzing your destiny...",
+    "messages": [
+      "Scanning your palm lines...",
+      "Reading life path indicators...",
+      "Analyzing energy signatures...",
+      "Compiling your destiny map..."
+    ]
+  },
+  "results": {
+    "personality": "Personality",
+    "career": "Career",
+    "love": "Love & Relationships",
+    "health": "Health",
+    "advice": "Personal Advice",
+    "shareButton": "Share Reading",
+    "saveButton": "Save as PDF",
+    "newReading": "New Reading"
+  },
+  "errors": {
+    "authFailed": "Authentication failed. Please try again.",
+    "uploadFailed": "Image upload failed. Please try again.",
+    "analysisFailed": "Analysis failed. Please try again.",
+    "noHandDetected": "No hand detected. Please adjust your position.",
+    "imageTooBlurry": "Image is too blurry. Please retake.",
+    "imageTooDark": "Image is too dark. Please improve lighting."
+  }
+}
