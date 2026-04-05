@@ -1,17 +1,22 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
-import './lib/env'; // Validate env vars at startup — throws if misconfigured
+/**
+ * @file main.tsx
+ * @description Application entry point. Handles React Root initialization.
+ * Imports global Tailwind configuration from ./index.css.
+ */
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { App } from './App';
+import './index.css'; 
 
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-  throw new Error('Root DOM element #root not found. Check public/index.html.');
+  throw new Error('Initialization Error: Root mounting target #root missing from DOM.');
 }
 
-createRoot(rootElement).render(
-  <StrictMode>
+ReactDOM.createRoot(rootElement).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
+  </React.StrictMode>
 );

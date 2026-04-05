@@ -1,92 +1,97 @@
 /**
  * @hook useOnboarding
- * @description State machine for the conversational onboarding flow.
- * Manages step progression, answer collection, and profile persistence.
+ * @description State machine for the conversational onboarding journey.
+ * Orchestrates step transitions, validation, and profile submission logic.
  */
 
 import { useState, useCallback } from 'react';
 import { profileService } from '../services/profile.service';
 import { ONBOARDING_STEPS } from '../types/onboarding.types';
-import type { OnboardingStep, UserProfile } from '../types/onboarding.types';
+import type { OnboardingStepConfig, UserProfile } from '../types/onboarding.types';
 
+/** Main state interface managing the flow progression */
 interface OnboardingState {
   currentStepIndex: number;
-  answers: Partial<Record<OnboardingStep, string>>;
+  answers: Record<string, string>;
   isSubmitting: boolean;
   error: string | null;
 }
 
-const INITIAL_STATE: OnboardingState = {
-  currentStepIndex: 0,
-  answers: {},
-  isSubmitting: false,
-  error: null,
-};
-
 /**
- * Onboarding state machine hook.
- * @param userId - Supabase auth user UUID to associate the profile with
- * @returns Current step state and submitAnswer action
+ * Custom hook providing robust onboarding control logic.
+ * 
+ * @param userId - Target user ID for profile persistence
  */
 export function useOnboarding(userId: string) {
-  const [state, setState] = useState<OnboardingState>(INITIAL_STATE);
+  const [state, setState] = useState<OnboardingState>({
+    currentStepIndex: 0,
+    answers: {},
+    isSubmitting: false,
+    error: null,
+  });
 
-  const currentStep = ONBOARDING_STEPS[state.currentStepIndex];
+  const currentStep: OnboardingStepConfig = ONBOARDING_STEPS[state.currentStepIndex];
   const isLastStep = state.currentStepIndex === ONBOARDING_STEPS.length - 1;
 
   /**
-   * Validates and submits the user's answer for the current step.
-   * Advances to the next step or saves profile on final step.
-   * @param value - Raw string value from the input field
+   * Action handler for step progression.
+   * Runs strict validation before advancing or submitting.
+   * 
+   * @param value - User-provided answer string
    */
-  const submitAnswer = useCallback(
-    async (value: string) => {
-      const validationError = currentStep.validate(value);
-      if (validationError) {
-        setState((prev) => ({ ...prev, error: validationError }));
-        return;
-      }
+  const submitAnswer = useCallback(async (value: string) => {
+    // 1. Initial local validation check
+    const validationError = currentStep.validate(value);
+    if (validationError) {
+      setState(prev => ({ ...prev, error: validationError }));
+      return;
+    }
 
-      const updatedAnswers = {
-        ...state.answers,
-        [currentStep.step]: value,
-      };
+    // 2. State accumulation for final submission
+    const updatedAnswers = { 
+      ...state.answers, 
+      [currentStep.step]: value 
+    };
 
-      if (isLastStep) {
-        setState((prev) => ({ ...prev, isSubmitting: true, error: null }));
-        try {
-          const profile: UserProfile = {
-            userId,
-            name: updatedAnswers.name ?? '',
-            age: parseInt(updatedAnswers.age ?? '0', 10),
-            dateOfBirth: updatedAnswers.dob ?? '',
-            onboardingCompletedAt: new Date().toISOString(),
-          };
-          await profileService.saveProfile(profile);
-          setState((prev) => ({
-            ...prev,
-            answers: updatedAnswers,
-            currentStepIndex: prev.currentStepIndex + 1,
-            isSubmitting: false,
-          }));
-        } catch {
-          setState((prev) => ({
-            ...prev,
-            isSubmitting: false,
-            error: 'Failed to save profile. Please try again.',
-          }));
-        }
-      } else {
-        setState((prev) => ({
-          ...prev,
+    // 3. Sequential flow logic: Final Submission vs Next Step
+    if (isLastStep) {
+      setState(prev => ({ ...prev, isSubmitting: true, error: null }));
+      try {
+        const profile: UserProfile = {
+          userId,
+          name: updatedAnswers.name,
+          age: parseInt(updatedAnswers.age),
+          dateOfBirth: updatedAnswers.dob,
+          onboardingCompletedAt: new Date().toISOString(),
+        };
+        
+        await profileService.saveProfile(profile);
+        
+        // Final transition on success
+        setState(prev => ({ 
+          ...prev, 
           answers: updatedAnswers,
           currentStepIndex: prev.currentStepIndex + 1,
-          error: null,
+          isSubmitting: false,
+          error: null
+        }));
+      } catch (err) {
+        setState(prev => ({ 
+          ...prev, 
+          isSubmitting: false,
+          error: (err as Error).message || 'Failed to save profile. Please try again.' 
         }));
       }
-    },
-    [currentStep, isLastStep, state.answers, userId],
-  );
+    } else {
+      // Linear step advancement
+      setState(prev => ({
+        ...prev,
+        answers: updatedAnswers,
+        currentStepIndex: prev.currentStepIndex + 1,
+        error: null,
+      }));
+    }
+  }, [currentStep, isLastStep, state.answers, userId]);
 
   return {
     currentStep,

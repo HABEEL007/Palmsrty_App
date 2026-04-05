@@ -1,66 +1,76 @@
 /**
- * @module AuthService
- * @description Handles all authentication operations via Supabase OAuth.
- * Follows Single Responsibility Principle — auth business logic only, no UI.
+ * @file auth.service.ts
+ * @description Authentication business logic — Supabase OAuth
  */
 
-import { supabase } from '@palmistry/utils/supabase';
+import { supabase } from '../../../lib/supabase';
 import type { AuthProvider, AuthUser } from '../types/auth.types';
 
 export class AuthService {
   /**
-   * Initiates OAuth sign-in flow by redirecting to provider.
-   * @param provider - OAuth provider ('google' | 'apple')
-   * @throws {Error} When OAuth initiation fails
+   * Signs up a new user with email and password.
+   */
+  async signUp(email: string, password: string): Promise<void> {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) throw new Error(`AUTH_SIGNUP_FAILED: ${error.message}`);
+  }
+
+  /**
+   * Signs in an existing user with email and password.
+   */
+  async signInWithEmail(email: string, password: string): Promise<void> {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw new Error(`AUTH_SIGNIN_FAILED: ${error.message}`);
+  }
+
+  /**
+   * Initiate OAuth sign-in with Google or Apple
    */
   async signInWithProvider(provider: AuthProvider): Promise<void> {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
+        queryParams: { access_type: 'offline', prompt: 'consent' },
       },
     });
-
-    if (error) {
-      throw new Error(`AUTH_${provider.toUpperCase()}_FAILED: ${error.message}`);
-    }
+    if (error) throw new Error(`AUTH_${provider.toUpperCase()}_FAILED: ${error.message}`);
   }
 
-  /**
-   * Signs out the current user and clears the active session.
-   * @throws {Error} When sign-out operation fails
-   */
+  /** Sign out current user */
   async signOut(): Promise<void> {
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw new Error(`AUTH_SIGNOUT_FAILED: ${error.message}`);
-    }
+    if (error) throw new Error(`AUTH_SIGNOUT_FAILED: ${error.message}`);
   }
 
-  /**
-   * Maps a raw Supabase user object to the application's AuthUser type.
-   * Provides a clean adapter layer between Supabase and application models.
-   * @param supabaseUser - Raw Supabase user object from session
-   * @returns Normalized AuthUser for UI consumption
-   */
-  mapToAuthUser(supabaseUser: Record<string, unknown>): AuthUser {
-    const metadata = (supabaseUser.user_metadata as Record<string, string>) ?? {};
-    const appMeta = (supabaseUser.app_metadata as Record<string, string>) ?? {};
+  /** Map raw Supabase user to AuthUser */
+  async mapToAuthUser(supabaseUser: any): Promise<AuthUser> {
+    // Check if onboarding is complete
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('onboarding_completed_at')
+      .eq('id', supabaseUser.id)
+      .single();
 
     return {
-      id: supabaseUser.id as string,
-      email: (supabaseUser.email as string) ?? null,
-      fullName: metadata.full_name ?? null,
-      avatarUrl: metadata.avatar_url ?? null,
-      provider: (appMeta.provider as AuthProvider) ?? null,
-      createdAt: supabaseUser.created_at as string,
+      id: supabaseUser.id,
+      email: supabaseUser.email ?? null,
+      fullName: supabaseUser.user_metadata?.full_name ?? null,
+      avatarUrl: supabaseUser.user_metadata?.avatar_url ?? null,
+      provider: supabaseUser.app_metadata?.provider ?? null,
+      onboardingCompleted: !!profile?.onboarding_completed_at,
+      createdAt: supabaseUser.created_at,
     };
   }
 }
 
-/** Singleton auth service instance */
 export const authService = new AuthService();

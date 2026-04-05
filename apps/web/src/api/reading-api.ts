@@ -2,8 +2,9 @@
  * @file reading.api.ts
  */
 
-import { apiClient, ApiResponse } from './client';
-import { PalmReading } from '@palmistry/types';
+import { apiClient } from './client';
+import type { ApiResponse } from './client';
+import type { PalmReading } from '@palmistry/types';
 
 export const readingApi = {
   analyze: async (leftImage: File | null, rightImage: File | null): Promise<ApiResponse<PalmReading>> => {

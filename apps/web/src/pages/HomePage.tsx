@@ -1,134 +1,145 @@
-import React from 'react';
+/**
+ * @file HomePage.tsx
+ * @description Home screen — hero + start reading CTA
+ */
+
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation, Trans } from 'react-i18next';
-import { Button, Card, Typography } from '@palmistry/ui';
-import { Camera, Zap, Brain, Layers, Star } from 'lucide-react';
+import { useAuth } from '../features/auth/hooks/useAuth';
+
+const STAGGER = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+};
+const ITEM = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { user, signOut } = useAuth();
 
-  const quickStats = [
-    { label: t('home.stats.readings'), value: "12", icon: <Layers size={18} /> },
-    { label: t('home.stats.accuracy'), value: "98%", icon: <Zap size={18} /> },
-    { label: t('home.stats.insights'), value: "45", icon: <Brain size={18} /> },
-  ];
+  useEffect(() => {
+    // If user is authenticated but hasn't completed onboarding, redirect them
+    if (user && !user.onboardingCompleted) {
+      navigate('/onboarding', { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
-    <main className="p-6 space-y-8 animate-in fade-in duration-700 max-w-2xl mx-auto">
-      {/* Greeting Section */}
-      <section className="space-y-2 mt-4">
-        <Typography variant="caption" className="uppercase tracking-[0.3em] text-primary-neon font-bold">
-           {t('home.welcome')}
-        </Typography>
-        <Typography variant="h1" className="text-4xl font-extrabold tracking-tighter leading-tight">
-           <Trans i18nKey="home.headline">
-              Your Destiny is <br/>
-              <span className="text-secondary-glow italic">in your hands.</span>
-           </Trans>
-        </Typography>
-      </section>
+    <div className="min-h-screen bg-[#0B0F1A] flex flex-col relative overflow-hidden"
+      style={{ maxWidth: 480, margin: '0 auto' }}>
 
-      {/* Quick Stats Grid */}
-      <section className="grid grid-cols-3 gap-3">
-        {quickStats.map((stat, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="glass p-4 flex flex-col items-center gap-1 border-white/5 active:scale-95 transition-transform"
+      {/* Glows */}
+      <div className="absolute top-[-5%] left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%)' }} />
+      <div className="absolute bottom-0 right-[-10%] w-72 h-72 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%)' }} />
+
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-6 relative z-10">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🔮</span>
+          <span className="text-sm font-semibold text-slate-300">Palmistry AI</span>
+        </div>
+        <button onClick={signOut} className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+          Sign out
+        </button>
+      </div>
+
+      {/* Hero */}
+      <motion.div
+        variants={STAGGER}
+        initial="hidden"
+        animate="visible"
+        className="flex-1 flex flex-col items-center justify-center px-5 text-center py-12 relative z-10"
+      >
+        <motion.div variants={ITEM}>
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="text-7xl mb-6"
           >
-             <div className="text-primary-neon opacity-70 mb-1">{stat.icon}</div>
-             <span className="text-xl font-bold tracking-tight">{stat.value}</span>
-             <span className="text-[9px] uppercase font-bold text-muted">{stat.label}</span>
+            🖐️
           </motion.div>
-        ))}
-      </section>
+        </motion.div>
 
-      {/* Call to Action Card */}
-      <section>
-        <Card variant="glass" isGlow className="p-0 relative overflow-hidden group border-primary/20">
-           <div className="p-8 relative z-10 space-y-4">
-              <div className="flex items-center gap-2 text-secondary-glow text-xs font-bold uppercase tracking-widest">
-                 <Star size={14} fill="currentColor" />
-                 {t('home.premiumFeature')}
-              </div>
-              <Typography variant="h3" className="font-bold tracking-tight text-2xl">
-                <Trans i18nKey="home.ctaTitle">Ready for a <br/>New Reading?</Trans>
-              </Typography>
-              <Typography variant="body" className="text-muted text-sm max-w-[220px] leading-relaxed">
-                 {t('home.ctaBody')}
-              </Typography>
-              <Button 
-                variant="primary" 
-                className="w-full gap-3 neon-glow mt-2 h-14 text-base font-bold"
-                onClick={() => navigate('/scan')}
-              >
-                 <Camera size={20} />
-                 {t('home.ctaButton')}
-              </Button>
-           </div>
-           
-           {/* Decorative Elements */}
-           <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-colors" />
-           <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-              <Camera size={160} strokeWidth={0.5} />
-           </div>
-        </Card>
-      </section>
+        <motion.div variants={ITEM} className="mb-3">
+          <span className="text-xs font-semibold tracking-widest uppercase"
+            style={{ color: '#7C3AED' }}>
+            AI Palm Reading
+          </span>
+        </motion.div>
 
-      {/* Recent Activity */}
-      <section className="space-y-4">
-         <div className="flex justify-between items-end">
-            <Typography variant="h4" className="font-bold tracking-tight text-lg">{t('home.recentTitle')}</Typography>
-            <Typography variant="caption" className="text-primary-neon font-bold cursor-pointer hover:underline">{t('home.viewAll')}</Typography>
-         </div>
-         
-         <div className="space-y-3">
-            {[
-              { date: "Yesterday", type: "Career Path", img: "https://images.unsplash.com/photo-1542332213-9b5a5a3fab35" },
-              { date: "3 Days ago", type: "Love & Harmony", img: "https://images.unsplash.com/photo-1510673422415-38c538ced987" }
-            ].map((reading, i) => (
-               <motion.div 
-                 key={i} 
-                 whileTap={{ scale: 0.98 }}
-                 className="flex items-center gap-4 p-4 glass border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
-               >
-                  <div className="w-14 h-14 rounded-xl bg-surface border border-white/5 flex items-center justify-center overflow-hidden">
-                     <img 
-                       src={`${reading.img}?auto=format&fit=crop&q=80&w=100`} 
-                       className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
-                       alt="past reading"
-                     />
-                  </div>
-                  <div className="flex-1">
-                     <Typography variant="body" className="font-bold text-sm">{reading.type}</Typography>
-                     <Typography variant="caption" className="text-muted text-[10px]">{reading.date} • High Confidence</Typography>
-                  </div>
-                  <div className="bg-primary/10 p-2 rounded-full text-primary-neon opacity-0 group-hover:opacity-100 transition-opacity">
-                     <Zap size={14} />
-                  </div>
-               </motion.div>
-            ))}
-         </div>
-      </section>
+        <motion.h1 variants={ITEM}
+          className="text-4xl font-bold text-slate-100 leading-tight mb-4 tracking-tight">
+          Reveal What Your<br />Hands Say
+        </motion.h1>
 
-      {/* Pro Tip Banner */}
-      <section className="p-5 glass border-accent/20 bg-accent/5 rounded-2xl">
-         <div className="flex gap-4 items-center">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent">
-               <Star size={18} fill="currentColor" />
+        <motion.p variants={ITEM} className="text-sm text-gray-500 leading-relaxed mb-10 max-w-xs">
+          Advanced AI analyzes your palm lines, mounts, and hand shape to reveal deep insights about your life path.
+        </motion.p>
+
+        {user && (
+          <motion.p variants={ITEM} className="text-xs text-gray-600 mb-6">
+            Welcome back, <span style={{ color: '#C4B5FD' }}>{user.fullName?.split(' ')[0] ?? 'Friend'}</span>
+          </motion.p>
+        )}
+
+        <motion.div variants={ITEM} className="w-full max-w-xs flex flex-col gap-3">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.02 }}
+            onClick={() => navigate('/scan')}
+            className="w-full py-4 rounded-2xl text-sm font-semibold text-white"
+            style={{
+              background: 'linear-gradient(135deg, #7C3AED, #6D28D9)',
+              boxShadow: '0 4px 24px rgba(124,58,237,0.4)',
+            }}
+          >
+            ✦ Scan My Palm
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => navigate('/history')}
+            className="w-full py-4 rounded-2xl text-sm font-semibold transition-all"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: '#94A3B8',
+            }}
+          >
+            View Past Readings
+          </motion.button>
+        </motion.div>
+      </motion.div>
+
+      {/* How it works */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+        className="px-5 pb-10 relative z-10"
+      >
+        <p className="text-xs text-gray-600 text-center mb-4 uppercase tracking-widest">How it works</p>
+        <div className="flex gap-3">
+          {[
+            { icon: '📸', label: 'Scan', desc: 'Take a photo of both palms' },
+            { icon: '🤖', label: 'Analyze', desc: 'AI reads your lines in seconds' },
+            { icon: '✨', label: 'Reveal', desc: 'Get your personalized reading' },
+          ].map((step, i) => (
+            <div key={i} className="flex-1 rounded-2xl p-3 text-center"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="text-xl mb-1">{step.icon}</div>
+              <div className="text-xs font-semibold text-slate-400 mb-1">{step.label}</div>
+              <div className="text-xs text-gray-600 leading-snug">{step.desc}</div>
             </div>
-            <Typography variant="body" className="text-muted text-xs leading-tight">
-               <span className="text-white font-bold block mb-1">{t('home.proTip')}</span>
-               "{t('home.proTipText')}"
-            </Typography>
-         </div>
-      </section>
-      
-      <div className="h-10" /> {/* Bottom Spacer */}
-    </main>
+          ))}
+        </div>
+      </motion.div>
+    </div>
   );
 };

@@ -1,45 +1,43 @@
+/**
+ * @file tailwind.config.ts
+ * @description Centralized configuration for Tailwind styling system.
+ * Defines project custom theme, colors, and accessibility plugins.
+ */
+
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-    '../../packages/ui/src/**/*.{js,ts,jsx,tsx}',
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
         background: '#0B0F1A',
+        surface: '#141827',
         primary: {
           DEFAULT: '#7C3AED',
-          neon: '#7C3AED',
+          neon: '#9333EA',
+          glow: 'rgba(124, 58, 237, 0.4)',
         },
         secondary: {
           DEFAULT: '#06B6D4',
-          glow: '#06B6D4',
+          glow: '#22D3EE',
         },
-        accent: '#F59E0B',
-        surface: '#141827',
-        border: '#1E2840',
-        text: '#E5E7EB',
-        muted: '#6B7280',
+        accent: {
+          DEFAULT: '#F59E0B',
+          muted: '#D97706',
+        },
+        muted: '#9CA3AF',
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      fontFamily: {
+        'inter': ['Inter', 'sans-serif'],
+        'outfit': ['Outfit', 'sans-serif'],
       },
       boxShadow: {
-        'neon-primary': '0 0 20px rgba(124, 58, 237, 0.4)',
-        'neon-secondary': '0 0 20px rgba(6, 182, 212, 0.4)',
-      },
-      keyframes: {
-        'bg-shift': {
-          '0%, 100%': { background: '#0B0F1A' },
-          '50%': { background: '#0F172A' },
-        },
-      },
-      animation: {
-        'bg-shift': 'bg-shift 10s ease-in-out infinite',
+        'neon': '0 0 20px rgba(124, 58, 237, 0.4)',
+        'secondary': '0 0 20px rgba(6, 182, 212, 0.3)',
       },
     },
   },

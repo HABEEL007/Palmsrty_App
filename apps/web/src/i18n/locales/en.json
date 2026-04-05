@@ -9,23 +9,6 @@
     "continueWithApple": "Continue with Apple",
     "termsNote": "By continuing, you agree to our Terms of Service"
   },
-  "home": {
-    "welcome": "Welcome back, Seeker",
-    "headline": "Your Destiny is <br/> <span className=\"text-secondary-glow italic\">in your hands.</span>",
-    "stats": {
-      "readings": "Readings",
-      "accuracy": "Accuracy",
-      "insights": "Insights"
-    },
-    "premiumFeature": "Premium Feature",
-    "ctaTitle": "Ready for a <br/>New Reading?",
-    "ctaBody": "Analyze your palm lines with our latest Gemini 1.5 Flash AI engine for 99% precision.",
-    "ctaButton": "Start Scanning",
-    "recentTitle": "Recent Insights",
-    "viewAll": "View All",
-    "proTip": "PRO TIP",
-    "proTipText": "The stars incline, but do not bind. Your daily choices shape your life lines."
-  },
   "onboarding": {
     "title": "Before we begin...",
     "stepOf": "Step {{current}} of {{total}}"

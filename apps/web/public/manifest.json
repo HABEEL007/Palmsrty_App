@@ -1,13 +1,15 @@
 {
   "name": "Palmistry AI — Read Your Destiny",
   "short_name": "Palmistry AI",
-  "description": "AI-powered palm reading using GPT-4o vision",
+  "description": "AI-powered palm reading with GPT-4o vision. Discover what your hands reveal.",
   "theme_color": "#0B0F1A",
   "background_color": "#0B0F1A",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
   "start_url": "/",
+  "lang": "en",
+  "categories": ["lifestyle", "personalization", "utilities"],
   "icons": [
     {
       "src": "/icons/icon-192.png",

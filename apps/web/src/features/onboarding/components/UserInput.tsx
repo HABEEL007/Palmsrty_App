@@ -1,105 +1,113 @@
 /**
  * @component UserInput
- * @description Controlled input component for each onboarding step.
- * Handles text, number, and date input types with validation error display.
+ * @description Dynamic input component for onboarding flow based on step configuration.
+ * Orchestrates localized data capture and specialized form controls.
  */
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Star } from 'lucide-react';
 import type { OnboardingStepConfig } from '../types/onboarding.types';
 
 interface UserInputProps {
-  /** Current step configuration with input type and placeholder */
+  /** Config object defining current capture step requirements */
   step: OnboardingStepConfig;
-  /** Submission handler called with the validated value */
+  /** Action handler when user confirms their answer */
   onSubmit: (value: string) => void;
-  /** Inline validation or server error message */
+  /** Active validation error if present */
   error: string | null;
-  /** Disables input during async profile save */
+  /** Loading state during profile saving */
   isLoading: boolean;
 }
 
 /**
- * Single-step input component for the onboarding chat flow.
- * Submits on Enter key press or Continue button click.
+ * Standardized input control with stateful feedback and localized placeholders.
+ * Supports: text, number, and date input types.
  */
-export function UserInput({ step, onSubmit, error, isLoading }: UserInputProps) {
+export const UserInput: React.FC<UserInputProps> = ({ 
+  step, 
+  onSubmit, 
+  error, 
+  isLoading 
+}) => {
   const [value, setValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-    if (value.trim()) {
-      onSubmit(value.trim());
-      setValue('');
-    }
-  };
+  // Auto-focus the input on every new step for seamless conversational flow
+  useEffect(() => {
+    inputRef.current?.focus();
+    setValue(''); // Reset internal state for new step
+  }, [step]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
+  /** Form submission handler with prevention of empty values */
+  const handleConfirm = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (value.trim() && !isLoading) {
+      onSubmit(value);
     }
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: 'easeOut', delay: 0.2 }}
-      className="space-y-2"
+      initial={{ opacity: 0, x: 12, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: 'easeOut', delay: 0.3 }}
+      className="flex flex-col items-end space-y-4 w-full"
     >
-      <div className="flex gap-2">
-        <input
-          id={`onboarding-input-${step.step}`}
-          type={step.inputType}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={step.placeholder}
-          disabled={isLoading}
-          aria-label={step.placeholder}
-          aria-invalid={!!error}
-          aria-describedby={error ? `error-${step.step}` : undefined}
-          className="
-            flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3
-            text-white text-sm placeholder-gray-500
-            focus:outline-none focus:border-purple-500/60 focus:bg-white/8
-            disabled:opacity-50 transition-colors duration-200
-            min-h-[44px]
-          "
-        />
-        <motion.button
-          onClick={handleSubmit}
-          disabled={isLoading || !value.trim()}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Continue to next step"
-          className="
-            bg-purple-600 hover:bg-purple-500 text-white
-            px-5 py-3 rounded-xl text-sm font-medium
-            disabled:opacity-50 disabled:cursor-not-allowed
-            transition-colors duration-200 min-h-[44px]
-          "
-        >
-          {isLoading ? (
-            <span
-              className="block w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"
-              aria-hidden="true"
-            />
-          ) : (
-            '→'
-          )}
-        </motion.button>
-      </div>
+      <form onSubmit={handleConfirm} className="w-full max-w-[85%] space-y-2">
+        <label htmlFor="onboarding-input" className="sr-only">
+          {step.placeholder}
+        </label>
+        
+        <div className="relative group">
+          <input
+            id="onboarding-input"
+            ref={inputRef}
+            type={step.inputType}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            disabled={isLoading}
+            placeholder={step.placeholder}
+            className="w-full px-6 py-4 bg-white/5 border border-white/10 
+                       rounded-2xl rounded-tr-none text-white text-sm font-medium
+                       placeholder:text-gray-600 focus:outline-none focus:border-purple-500/40 
+                       focus:ring-2 focus:ring-purple-500/10 transition-all 
+                       disabled:opacity-50 disabled:pointer-events-none pr-14"
+          />
+          
+          <button
+            type="submit"
+            disabled={!value.trim() || isLoading}
+            className="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-3
+                       bg-purple-600/20 text-purple-400 border border-purple-500/20 
+                       rounded-xl hover:bg-purple-600 transition-all duration-300
+                       disabled:opacity-20 disabled:pointer-events-none group-hover:border-purple-500/40"
+            aria-label="Confirm choice"
+          >
+            <ArrowRight size={18} />
+          </button>
+        </div>
 
-      {error && (
-        <motion.p
-          id={`error-${step.step}`}
-          role="alert"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-red-400 text-xs px-1"
-        >
-          {error}
-        </motion.p>
-      )}
+        {/* Validation Error representation */}
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="px-4 py-2 bg-red-400/10 rounded-lg border border-red-400/20"
+              role="alert"
+            >
+              <div className="flex items-center gap-2">
+                <Star size={12} className="text-red-400" />
+                <span className="text-red-400 text-xs font-semibold leading-none">
+                  {error}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </form>
     </motion.div>
   );
-}
+};

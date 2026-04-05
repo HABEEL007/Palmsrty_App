@@ -1,111 +1,92 @@
 /**
  * @component ErrorBoundary
- * @description Class-based React error boundary for catching and displaying
- * uncaught runtime errors gracefully without crashing the entire app.
- * Integrates with external monitoring services (ready for Sentry).
+ * @description Global application error interceptor that prevents blank white screens.
+ * Provides a production-grade fallback UI with recovery actions.
  */
 
 import { Component, type ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { RefreshCcw, AlertTriangle } from 'lucide-react';
 
-interface Props {
-  /** Child tree to protect */
-  children: ReactNode;
+interface Props { 
+  /** Nested application components to observe */
+  children: ReactNode; 
 }
 
-interface State {
-  /** Whether an error has been caught */
-  hasError: boolean;
-  /** The caught error instance */
-  error: Error | null;
+interface State { 
+  /** Current error state status */
+  hasError: boolean; 
+  /** Captured error object for diagnostic display */
+  error: Error | null; 
 }
-
-/** Initial boundary state — no error, pass-through rendering */
-const INITIAL_STATE: State = { hasError: false, error: null };
 
 /**
- * Application-level error boundary.
- * Catches all unhandled errors in the component tree below it.
- * Displays a user-friendly fallback UI with a reload option.
+ * Class-based Error Boundary (required by React for error lifecycle methods).
  */
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = INITIAL_STATE;
+  // eslint-disable-next-line react/state-in-constructor
+  state: State = { hasError: false, error: null };
 
-  /**
-   * Derives error state from a caught error.
-   * Called by React during the render phase when an error is thrown.
-   */
+  /** Update local state so the next render will show the fallback UI. */
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  /**
-   * Side-effect hook after an error is caught.
-   * Forward to monitoring service (e.g., Sentry) when integrated.
-   * @param error - The thrown error object
-   */
-  componentDidCatch(error: Error): void {
-    // TODO: Replace with Sentry.captureException(error) in production
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.error('[ErrorBoundary] Unhandled error caught:', error);
-    }
+  /** Supplemental catch phase for side-effects (e.g., logging to observability services) */
+  componentDidCatch(error: Error) {
+    // eslint-disable-next-line no-console
+    console.error('[Application Fault Intercepted]', error);
   }
-
-  /** Resets boundary state to allow recovery without full page reload */
-  private handleReset = (): void => {
-    this.setState(INITIAL_STATE);
-  };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div
-          className="min-h-screen bg-[#0B0F1A] flex items-center justify-center p-4"
+        <main
+          className="min-h-screen bg-[#0B0F1A] flex items-center justify-center p-6 text-center"
           role="alert"
           aria-live="assertive"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            className="text-center max-w-sm"
-          >
-            <div className="text-5xl mb-4" role="img" aria-label="Warning icon">
-              ⚠️
+          {/* Ambient Glow Atmosphere (Consistent with Branding) */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-red-600/10 rounded-full blur-3xl" />
+          </div>
+
+          <div className="relative glass border-red-500/20 p-10 max-w-sm rounded-[40px] space-y-6">
+            {/* Visual Error Icon */}
+            <div 
+              className="w-16 h-16 rounded-full bg-red-400/10 flex items-center justify-center mx-auto"
+              aria-hidden="true" 
+            >
+              <AlertTriangle className="text-red-400" size={32} />
             </div>
-            <h2 className="text-white text-xl font-semibold mb-2 font-[Outfit]">
-              Something went wrong
-            </h2>
-            <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-              {this.state.error?.message ?? 'An unexpected error occurred.'}
-            </p>
-            <div className="flex gap-3 justify-center">
-              <button
-                id="error-boundary-reset-btn"
-                onClick={this.handleReset}
-                className="
-                  bg-white/10 hover:bg-white/15 border border-white/10
-                  text-white px-5 py-2.5 rounded-xl text-sm font-medium
-                  transition-colors duration-200 min-h-[44px]
-                "
-              >
-                Try Again
-              </button>
-              <button
-                id="error-boundary-reload-btn"
-                onClick={() => window.location.reload()}
-                className="
-                  bg-purple-600 hover:bg-purple-500 text-white
-                  px-5 py-2.5 rounded-xl text-sm font-medium
-                  transition-colors duration-200 min-h-[44px]
-                "
-              >
-                Reload App
-              </button>
+
+            {/* Error messaging */}
+            <div className="space-y-2">
+              <h2 className="text-white text-2xl font-extrabold tracking-tight">
+                Cosmic Interference
+              </h2>
+              <p className="text-gray-400 text-sm font-medium leading-relaxed">
+                The spirits encountered a disruption while calculating your destiny. 
+                {this.state.error && (
+                  <span className="block mt-2 font-mono text-[10px] opacity-60">
+                    ID: {this.state.error.name}
+                  </span>
+                )}
+              </p>
             </div>
-          </motion.div>
-        </div>
+
+            {/* Application Recovery action */}
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="group flex items-center justify-center gap-3 w-full px-6 py-4
+                         bg-purple-600 hover:bg-purple-500 text-white rounded-2xl 
+                         font-bold transition-all duration-300 shadow-xl"
+            >
+              <RefreshCcw className="group-hover:rotate-180 transition-transform duration-700" size={20} />
+              Reconnect to Destiny
+            </button>
+          </div>
+        </main>
       );
     }
 

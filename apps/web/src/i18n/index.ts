@@ -1,9 +1,8 @@
 /**
- * @module i18n
- * @description Internationalization configuration for the Palmistry AI application.
- * Supports: English (en), Urdu (ur), Arabic (ar), Hindi (hi).
- * Auto-detects browser language and persists selection in localStorage.
- * Sets RTL document direction for Arabic and Urdu automatically.
+ * @file i18n/index.ts
+ * @description Internationalization configuration for Palmistry AI.
+ * Supports: English (default), Urdu, Arabic, Hindi.
+ * Features: Automatic language detection, persistent storage, and RTL/LTR switching.
  */
 
 import i18n from 'i18next';
@@ -15,9 +14,7 @@ import ur from './locales/ur.json';
 import ar from './locales/ar.json';
 import hi from './locales/hi.json';
 
-/** Languages that require right-to-left text direction */
-const RTL_LANGUAGES = ['ar', 'ur'] as const;
-
+/** Initialization and plugin orchestration */
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -30,31 +27,23 @@ i18n
     },
     fallbackLng: 'en',
     defaultNS: 'translation',
-    interpolation: {
-      escapeValue: false, // React already escapes by default
+    interpolation: { 
+      escapeValue: false // React already escapes by default
     },
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'palmistry_lang',
     },
   });
 
 /**
- * Applies RTL or LTR document direction based on the active language.
- * Also sets the HTML lang attribute for SEO and screen readers.
- * @param lng - BCP 47 language code (e.g., 'ar', 'ur', 'en')
+ * Global Side-effect: Synchronize HTML accessibility attributes with active language.
+ * Handles RTL (Right-to-Left) direction for Arabic and Urdu.
  */
-function applyLanguageDirection(lng: string): void {
-  const isRtl = (RTL_LANGUAGES as readonly string[]).includes(lng);
-  document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+i18n.on('languageChanged', (lng) => {
+  const rtlLanguages = ['ar', 'ur'];
+  document.documentElement.dir = rtlLanguages.includes(lng) ? 'rtl' : 'ltr';
   document.documentElement.lang = lng;
-}
-
-// Apply on language change
-i18n.on('languageChanged', applyLanguageDirection);
-
-// Apply on initial load
-applyLanguageDirection(i18n.language);
+});
 
 export default i18n;

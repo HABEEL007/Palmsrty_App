@@ -3,18 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Progressive Web App Configuration -->
     <link rel="manifest" href="/manifest.json" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0B0F1A" />
-    <meta name="description" content="AI-powered palm reading using GPT-4o vision" />
+    
+    <!-- Search Engine Optimization (SEO) -->
     <title>Palmistry AI — Read Your Destiny</title>
+    <meta name="description" content="AI-powered palm reading using GPT-4o vision. Discover what your hands reveal about your life path, career, and love.">
+    <meta name="keywords" content="palmistry, ai palm reading, gpt-4o, hand reading, destiny, future">
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Palmistry AI — Read Your Destiny">
+    <meta property="og:description" content="AI-powered palm reading with GPT-4o vision. Reveal your destiny today.">
+    <meta property="og:image" content="/og-image.png">
 
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@400;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-[#0B0F1A] text-white selection:bg-primary-neon/30">
+  <body class="bg-[#0B0F1A] text-white selection:bg-purple-500/30 overflow-x-hidden">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

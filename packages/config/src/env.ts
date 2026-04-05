@@ -1,10 +1,26 @@
 import { z } from 'zod';
-import dotenv from 'dotenv';
-import path from 'path';
 
-// Force load .env from the project root
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-dotenv.config({ path: path.resolve(process.cwd(), '../../.env') }); // Fallback for package dirs
+// Browser-safe detection
+const isBrowser = typeof window !== 'undefined' || typeof self !== 'undefined';
+
+// Load .env only in Node environments
+if (!isBrowser) {
+  try {
+    // Use globalThis.require check to prevent bundlers like Vite from trying to resolve these in the browser
+    const req = typeof (globalThis as any).require !== 'undefined' ? (globalThis as any).require : undefined;
+    if (req) {
+      const dotenv = req('dotenv');
+      const path = req('path');
+      const proc = (globalThis as any).process;
+      if (proc && typeof proc.cwd === 'function') {
+        dotenv.config({ path: path.resolve(proc.cwd(), '.env') });
+        dotenv.config({ path: path.resolve(proc.cwd(), '../../.env') });
+      }
+    }
+  } catch (e) {
+    // Silence error if these are not available or if require fails
+  }
+}
 
 /**
  * Common Environment Schema
@@ -20,6 +36,13 @@ export const envSchema = z.object({
   SUPABASE_URL: z.string().url().optional(),
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+  
+  // Vite-exposed variants (for browser)
+  VITE_SUPABASE_URL: z.string().url().optional(),
+  VITE_SUPABASE_ANON_KEY: z.string().optional(),
+  VITE_APP_ENV: z.enum(['development', 'staging', 'production']).optional(),
+  VITE_GOOGLE_OAUTH_CLIENT_ID: z.string().optional(),
+  VITE_CLOUDINARY_CLOUD_NAME: z.string().optional(),
   
   // External APIs (AI)
   OPENAI_API_KEY: z.string().optional(),
@@ -53,16 +76,41 @@ export type Env = z.infer<typeof envSchema>;
 /**
  * Validated Environment Variables
  */
-export const validateEnv = (config: Record<string, unknown> = process.env): Env => {
-  const parsed = envSchema.safeParse(config);
+export const validateEnv = (config?: Record<string, unknown>): Env => {
+  // Determine the source of environment variables
+  const source = config || 
+    (isBrowser ? (import.meta as any).env : (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env : {}));
+
+  const parsed = envSchema.safeParse(source);
 
   if (!parsed.success) {
+    if (isBrowser) {
+      // In browser, we just warn to avoid crashing the startup
+      console.warn('⚠️ Invalid environment variables detected in browser:', parsed.error.format());
+      return (parsed as any).data || envSchema.parse({}); 
+    }
+    
     console.error('❌ Invalid environment variables:');
     console.error(JSON.stringify(parsed.error.format(), null, 4));
-    process.exit(1);
+    
+    const proc = (globalThis as any).process;
+    if (proc && typeof proc.exit === 'function') {
+      proc.exit(1);
+    }
+    throw new Error('Environment validation failed');
   }
 
-  return parsed.data;
+  const data = (parsed as any).data || envSchema.parse({});
+  
+  // Normalization logic for browser environments (map VITE_ back to regular)
+  if (isBrowser) {
+    data.SUPABASE_URL = data.SUPABASE_URL || (data as any).VITE_SUPABASE_URL;
+    data.SUPABASE_ANON_KEY = data.SUPABASE_ANON_KEY || (data as any).VITE_SUPABASE_ANON_KEY;
+    data.NODE_ENV = data.NODE_ENV || (data as any).VITE_APP_ENV;
+    data.CLOUDINARY_CLOUD_NAME = data.CLOUDINARY_CLOUD_NAME || (data as any).VITE_CLOUDINARY_CLOUD_NAME;
+  }
+
+  return data;
 };
 
 // Export singleton to avoid repetitive validation

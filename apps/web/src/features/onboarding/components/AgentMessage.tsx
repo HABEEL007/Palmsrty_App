@@ -1,39 +1,46 @@
 /**
  * @component AgentMessage
- * @description Animated AI agent speech bubble for the onboarding chat flow.
- * Typing animation reveals the message character by character for realism.
+ * @description Renders a conversational chat bubble representing the AI onboarding agent.
+ * Features specialized typography and premium glass styling.
  */
 
+import React from 'react';
 import { motion } from 'framer-motion';
 
 interface AgentMessageProps {
-  /** The agent's message text to display */
+  /** The message text to display in the bubble */
   message: string;
 }
 
 /**
- * Chat-style agent message with animated entrance.
+ * Message bubble with specialized animation entrance.
  */
-export function AgentMessage({ message }: AgentMessageProps) {
+export const AgentMessage: React.FC<AgentMessageProps> = ({ message }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -16 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, x: -12, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="flex items-start gap-3"
+      className="flex flex-col items-start space-y-2 max-w-[85%]"
     >
-      {/* Agent avatar */}
-      <div
-        className="w-9 h-9 rounded-full bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-lg flex-shrink-0"
+      {/* Agent Avatar Circle */}
+      <div 
+        className="w-8 h-8 rounded-full bg-purple-600/20 border border-purple-500/30 
+                   flex items-center justify-center text-lg shadow-sm"
         aria-hidden="true"
       >
-        🔮
+        ✨
       </div>
 
-      {/* Message bubble */}
-      <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3 max-w-xs">
-        <p className="text-white/90 text-sm leading-relaxed">{message}</p>
+      {/* Message Bubble */}
+      <div 
+        className="px-5 py-4 bg-white/5 border border-white/10 rounded-2xl 
+                   rounded-tl-none shadow-xl backdrop-blur-md"
+      >
+        <p className="text-white text-sm font-medium leading-relaxed tracking-tight">
+          {message}
+        </p>
       </div>
     </motion.div>
   );
-}
+};

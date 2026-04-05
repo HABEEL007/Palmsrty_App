@@ -4,7 +4,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { User } from '@palmistry/types';
+import type { User } from '@palmistry/types';
 
 interface UserState {
   user: User | null;

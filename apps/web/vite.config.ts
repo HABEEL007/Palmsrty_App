@@ -9,6 +9,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
   },
+  envDir: '../../',
   resolve: {
     preserveSymlinks: true,
   },
