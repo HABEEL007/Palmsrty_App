@@ -154,27 +154,39 @@ app.post('/analyze', async (req: Request, res: Response, _next: NextFunction): P
       }
 
       // 2. Persist to Supabase for History
+      let savedReading = null;
       try {
-        const { error: dbError } = await supabase.from('palm_readings').insert({
+        const { data: dbData, error: dbError } = await supabase.from('palm_readings').insert({
           user_id: userId,
           image_url: leftHandImage || rightHandImage, // Primary image
           analysis_result: analysisResult,
           hand_shape: analysisResult.handShape
-        });
+        }).select().single();
 
-        if (dbError) logger.error({ dbError }, 'Failed to persist reading to Supabase');
-        else logger.info({ userId }, 'Reading persisted to history');
+        if (dbError) {
+          logger.error({ dbError }, 'Failed to persist reading to Supabase');
+        } else {
+          logger.info({ userId }, 'Reading persisted to history');
+          savedReading = dbData;
+        }
 
       } catch (dbEx) {
         logger.error({ dbEx }, 'Database exception during persistence');
       }
 
+      res.status(200).json({ 
+        success: true, 
+        data: savedReading || {
+          analysisResult,
+          handShape: analysisResult.handShape,
+          createdAt: new Date().toISOString()
+        }
+      });
+
     } catch (e) {
       logger.error({ text, error: e }, 'Gemini result parse failed');
       throw new AppError(ErrorCode.INTERNAL_ERROR, 'AI produced unreadable data');
     }
-
-    res.status(200).json({ success: true, data: analysisResult });
 
   } catch (error: unknown) {
     logError('AI analysis failed', { service: 'ai-service', error });

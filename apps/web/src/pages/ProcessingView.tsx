@@ -82,7 +82,7 @@ export const ProcessingView: React.FC = () => {
     };
 
     const runAnalysis = async () => {
-      if (!imageData) {
+      if (!imageData || !user?.id) {
         navigate('/scan');
         return;
       }
@@ -93,21 +93,13 @@ export const ProcessingView: React.FC = () => {
         const file = new File([blob], 'palm_scan.jpg', { type: 'image/jpeg' });
 
         // 1. Call AI Analysis API
-        const apiResponse = await readingApi.analyze(file, null);
-        const analysis = apiResponse.data?.analysisResult; 
+        const apiResponse = await readingApi.analyze(user.id, file, null);
+        const savedReading = apiResponse.data;
+        const analysis = savedReading?.analysisResult; 
         
         if (!analysis) throw new Error('No analysis data received');
 
-        // 2. Persist to Supabase Database
-        if (user?.id) {
-          await supabase.from('readings').insert({
-            user_id: user.id,
-            hand_shape: analysis.handShape,
-            analysis_result: analysis,
-          });
-        }
-
-        // 3. Map complex result to UI Store
+        // 2. Map complex result to UI Store
         const resultForStore = mapToReadingResult(analysis);
         setReadingResult(resultForStore as any);
         

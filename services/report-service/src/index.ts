@@ -7,7 +7,6 @@
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { jsPDF } from 'jspdf';
-import { PalmReading } from '@palmistry/types';
 import { ErrorCode, createErrorResponse, logger } from '@palmistry/utils';
 import { validateEnv } from '@palmistry/config/env';
 

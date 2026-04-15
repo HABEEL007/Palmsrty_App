@@ -25,7 +25,21 @@ export function useAuth() {
         const user = await authService.mapToAuthUser(session.user);
         setState({ user, isLoading: false, isAuthenticated: true, error: null });
       } else {
-        setState({ user: null, isLoading: false, isAuthenticated: false, error: null });
+        // --- BYPASS LOGIC FOR DEV ---
+        const isDev = import.meta.env.VITE_APP_ENV === 'development' || import.meta.env.VITE_BYPASS_AUTH === 'true';
+        if (isDev) {
+          console.warn('DEBUG: Bypassing authentication for development.');
+          const mockUser = {
+            id: '00000000-0000-0000-0000-000000000000',
+            email: 'dev@palmistry.ai',
+            firstName: 'Demo',
+            lastName: 'User',
+            onboardingCompleted: true, // Show main features immediately
+          };
+          setState({ user: mockUser as any, isLoading: false, isAuthenticated: true, error: null });
+        } else {
+          setState({ user: null, isLoading: false, isAuthenticated: false, error: null });
+        }
       }
     });
 
@@ -36,6 +50,10 @@ export function useAuth() {
           const user = await authService.mapToAuthUser(session.user);
           setState({ user, isLoading: false, isAuthenticated: true, error: null });
         } else {
+          // Keep bypass if in development
+          const isDev = import.meta.env.VITE_APP_ENV === 'development' || import.meta.env.VITE_BYPASS_AUTH === 'true';
+          if (isDev) return; 
+
           setState({ user: null, isLoading: false, isAuthenticated: false, error: null });
         }
       }

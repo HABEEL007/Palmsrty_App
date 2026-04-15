@@ -189,6 +189,16 @@ export const CaptureView: React.FC = () => {
         />
         
         <button 
+          onClick={() => {
+            setImageData('https://images.unsplash.com/photo-1539627831859-a911cf04d3cd?q=80&w=1000&auto=format&fit=crop'); 
+            navigate('/processing');
+          }}
+          className="w-full text-xs font-bold text-purple-500 hover:text-purple-400 uppercase tracking-widest transition-colors py-2 border border-purple-500/20 rounded-xl mb-4"
+        >
+          Demo Scan (No camera needed)
+        </button>
+
+        <button 
           onClick={() => fileInputRef.current?.click()}
           className="w-full text-xs font-bold text-gray-500 hover:text-purple-400 uppercase tracking-widest transition-colors py-2"
         >

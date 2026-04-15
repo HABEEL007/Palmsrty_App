@@ -6,19 +6,16 @@ const isBrowser = typeof window !== 'undefined' || typeof self !== 'undefined';
 // Load .env only in Node environments
 if (!isBrowser) {
   try {
-    // Use globalThis.require check to prevent bundlers like Vite from trying to resolve these in the browser
-    const req = typeof (globalThis as any).require !== 'undefined' ? (globalThis as any).require : undefined;
-    if (req) {
-      const dotenv = req('dotenv');
-      const path = req('path');
-      const proc = (globalThis as any).process;
-      if (proc && typeof proc.cwd === 'function') {
-        dotenv.config({ path: path.resolve(proc.cwd(), '.env') });
-        dotenv.config({ path: path.resolve(proc.cwd(), '../../.env') });
-      }
-    }
+    // Import using dynamic import to avoid issues in some environments
+    const dotenv = require('dotenv');
+    const path = require('path');
+    const rootEnv = path.resolve(process.cwd(), '../../.env');
+    const localEnv = path.resolve(process.cwd(), '.env');
+    
+    dotenv.config({ path: rootEnv });
+    dotenv.config({ path: localEnv });
   } catch (e) {
-    // Silence error if these are not available or if require fails
+    // Fallback if require fails
   }
 }
 
