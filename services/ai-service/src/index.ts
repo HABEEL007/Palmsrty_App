@@ -7,7 +7,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { GoogleGenerativeAI, Part } from '@google/generative-ai';
 import { Redis } from '@upstash/redis';
-import { PalmAnalysisResult, HandShape } from '@palmistry/types';
+import { PalmAnalysisResult } from '@palmistry/types';
 import { ErrorCode, AppError, createErrorResponse, logger, logError, supabase } from '@palmistry/utils';
 import { validateEnv } from '@palmistry/config/env';
 
@@ -189,7 +189,7 @@ app.post('/analyze', async (req: Request, res: Response, _next: NextFunction): P
     }
 
   } catch (error: unknown) {
-    logError('AI analysis failed', { service: 'ai-service', error });
+    logError('AI analysis failed', { service: 'ai-service', function: 'analyze', error });
     _next(error);
   }
 });
