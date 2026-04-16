@@ -47,7 +47,7 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     strategy:
       matrix:
-        service: [api-gateway, ai-service, image-service, keep-alive]
+        service: [api-gateway, ai-service, image-service, keep-alive, ad-service, reading-service, report-service]
     steps:
       - uses: actions/checkout@v4.2.2
       
